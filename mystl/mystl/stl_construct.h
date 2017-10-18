@@ -103,7 +103,7 @@ void *_malloc_alloc_template::oom_realloc()
 	void (*my_malloc_handler)();
 	void *result;
 
-	for (;;) 
+	for (;;)  
 	{
 		my_malloc_handler = _malloc_alloc_oom_handler;
 		if (0 == my_malloc_handler) { __THROW_BAD_ALLOC; }
