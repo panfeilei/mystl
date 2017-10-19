@@ -123,7 +123,17 @@ private:
 	{
 		return (bytes + _ALIGN - 1) & ~(_ALIGN - 1);
 	} 
-private:
+	
+	union obj {
+		union obj * free_list_link;
+		char client_data[1];
+	};
+
+	static obj *volatile free_list[_NFREELISTS];
+	static size_t FREELIST_INDEX(size_t bytes)
+	{
+		return((bytes + _ALIGN - 1) / (_ALIGN - 1));
+	}
 };
 
 
