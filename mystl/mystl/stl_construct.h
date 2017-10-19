@@ -112,6 +112,19 @@ void *_malloc_alloc_template::oom_realloc()
 		if (result) return(result);
 	}
 }
+enum {_ALIGN = 8};
+enum {_MAX_BYTES = 128};
+enum {_NFREELISTS = _MAX_BYTES / _ALIGN};
+template<bool threads,int inst>
+class _default_alloc_template
+{
+private:
+	static rsize_t ROUND_UP(rsize_t bytes)
+	{
+		return (bytes + _ALIGN - 1) & ~(_ALIGN - 1);
+	} 
+private:
+};
 
 
  
