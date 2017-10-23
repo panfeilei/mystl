@@ -134,6 +134,74 @@ private:
 	{
 		return((bytes + _ALIGN - 1) / (_ALIGN - 1));
 	}
+
+	static void *allocate(size_t n)
+	{
+		obj * volatile *my_free_list;
+		obj * result;
+
+		if (n > (size_t)_MAX_BYTES)
+		{
+			return _malloc_alloc_template::allocate(n);
+		}
+		my_free_list = free_list + FREELIST_INDEX(n);
+		result = *my_free_list;
+		if (result == 0)
+		{
+			void *r = refill(ROUND_UP(n));
+			return r;
+		}
+
+		*my_free_list = result->free_list_link;
+		return result;
+	}
+
+	static void deallocate(void *p, size_t n)
+	{
+		obj *q = (obj *)p;
+		obj *volatile * my_free_list;
+
+		if (n > (size_t)_MAX_BYTES)
+		{
+			_malloc_alloc_template::deallocate(p, n);
+			return;
+		}
+
+		my_free_list = free_list + FREELIST_INDEX(n);
+		q->free_list_link = *my_free_list;
+		*my_free_list = q;
+	}
+
+	void * refill(size_t n)
+	{
+		int nobj = 20;
+		char *chunk = chunk_alloc(n, nobj);
+		obj *volatile *my_free_list;
+		obj *result;
+		obj *curren_obj, *next_obj;
+		int i;
+
+		if (1 == nobj) return chunk;
+		my_free_list = free_list + FREELIST_INDEX(n);
+
+		result = (obj *)chunk;
+		*my_free_list = next_obj = (obj *)(chunk + n);
+
+		for (i = 1;; i++)
+		{
+			curren_obj = next_obj;
+			next_obj = (obj *)((char *)next_obj + n);
+			if (nobj - 1 == n)
+			{
+				curren_obj->free_list_link = 0;
+				break;
+			}
+			else
+				curren_obj->free_list_link = next_obj;
+
+		}
+		return result;
+	}
 };
 
 
