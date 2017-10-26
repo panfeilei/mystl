@@ -79,7 +79,7 @@ public:
 
 
 template<int inst>
-void (*_malloc_alloc_template::_malloc_alloc_oom_handler)() = 0; //分配内存失败的处理函�?
+void (*_malloc_alloc_template::_malloc_alloc_oom_handler)() = 0; //分配内存失败的处理函�?
 
 template<int inst>
 void *_malloc_alloc_template::oom_malloc(rsize_t n)
@@ -237,8 +237,26 @@ private:
 			}
 
 			start_free = (char *)malloc(byte_to_get);
-			if (start_free == 0)
+			if(start_free == 0)
 			{
+				size_t i;
+				obj* my_free_list;
+				obj* p;
+
+				for(i = size; i<_MAX_BYTES; i+= _ALIGN)
+				{
+					my_free_list = free_list + FREELIST_INDEX(i);
+					p = *my_free_list;
+					if(0 != p)
+					{
+						*my_free_list = p->free_list_link;
+						start_free = p;
+						end_free = start_free + i;
+						return chunk_alloc(size, nobj);
+					}
+				}
+				end_free = 0;
+				start_free = _default_alloc_template::allocate(byte_to_get);
 			}
 			heap_size += byte_to_get;
 			end_free = start_free + byte_to_get;
