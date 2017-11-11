@@ -20,3 +20,14 @@ struct iterator_traits<Tp*>
 	
 }
 
+template<class Tp>
+struct iterator_traits<const Tp*>
+{
+	//typedef typename _iterator::iterator_category iterator_category;
+	typedef  Tp 			value_type;
+	typedef  const Tp* 			pointer;
+	typedef  ptrdiff_t 		difference_type;
+	typedef  const Tp& 			reference;
+	
+}
+
