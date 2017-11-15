@@ -1,3 +1,11 @@
+
+
+struct input_iterator_tag{};
+struct output_iterator_tag{};
+struct forward_iterator_tag:public input_iterator_tag{};
+struct bidirectional_iterator_tag:public forward_iterator_tag{};
+struct random_iterator_tag:public bidirectional_iterator_tag{};
+
 template<class _iterator>
 struct iterator_traits
 {
@@ -12,22 +20,67 @@ struct iterator_traits
 template<class Tp>
 struct iterator_traits<Tp*>
 {
-	//typedef typename _iterator::iterator_category iterator_category;
-	typedef  Tp 			value_type;
-	typedef  Tp* 			pointer;
-	typedef  ptrdiff_t 		difference_type;
-	typedef  Tp& 			reference;
+	typedef random_iterator_tag  	iterator_category;
+	typedef  Tp 					value_type;
+	typedef  Tp* 					pointer;
+	typedef  ptrdiff_t 				difference_type;
+	typedef  Tp& 					reference;
 	
 }
 
 template<class Tp>
 struct iterator_traits<const Tp*>
 {
-	//typedef typename _iterator::iterator_category iterator_category;
-	typedef  Tp 			value_type;
-	typedef  const Tp* 			pointer;
-	typedef  ptrdiff_t 		difference_type;
-	typedef  const Tp& 			reference;
+	typedef  random_iterator_tag	iterator_category;
+	typedef  Tp 					value_type;
+	typedef  const Tp* 				pointer;
+	typedef  ptrdiff_t 				difference_type;
+	typedef  const Tp& 				reference;
 	
 }
+
+template <class InputIterator, class Distance>
+inline void __advance(InputIterator &i, Distance n, input_iterator_tag)
+{
+	while(n--) ++i;
+}
+
+template <class bidirectionalIterator, class Distance>
+inline void __advance(bidirectionalIterator &i, Distance n, bidirectional_iterator_tag)
+{
+	if(n >= 0)
+		while(n--) ++i;
+	else
+		while(n++) --i;
+}
+
+template <class randomIterator, class Distance>
+inline void __advance(randomIterator &i, Distance n, random_iterator_tag)
+{
+	i += n;
+}
+
+
+template <class InputIterator, class Distance>
+inline void advance(InputIterator &i, Distance n, random_iterator_tag)
+{
+	_advance(i, n, iterator_categoty(InputIterator));
+}
+
+template <class It>
+inline typename iterator_traits<It>::iterator_category
+iterator_categoty(const It&)
+{
+	typedef typename iterator_traits<It>::iterator_category catrgory;
+	return catrgory();
+}
+
+
+template <class Iter>
+inline typename iterator_traits<Iter>::value_type*
+__value_type(const Iter&)
+{
+	return static_cast<typename iterator_traits<Iter>::value_type*>(0);
+}
+
 
