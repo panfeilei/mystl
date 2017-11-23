@@ -228,26 +228,25 @@ private:
 	}
 };
 
-
 template <class _TP, class _Alloc>
 class simple_alloc
 {
 public:
 	static _TP* allocate(size_t n)
 	{
-		return 0 == n ? 0 : (_Tp*) _Alloc::allocate(n * sizeof(_Tp));
+		return 0 == n ? 0 : (_TP*) _Alloc::allocate(n * sizeof(_TP));
 	}
 	static _TP* allocate(void)
 	{
-		return (_Tp*) _Alloc::allocate(sizeof(_Tp));
+		return (_Tp*) _Alloc::allocate(sizeof(_TP));
 	}
-	static _TP* deallocate(Tp* p)
+	static _TP* deallocate(_TP* p)
 	{
-		_Alloc::deallocate(p,  sizeof(_Tp));
+		_Alloc::deallocate(p,  sizeof(_TP));
 	}
-	static _TP* deallocate(Tp* p, size_t n)
+	static _TP* deallocate(_TP* p, size_t n)
 	{
-		if(0 != n) _Alloc::deallocate(p,  n * sizeof(_Tp));
+		if(0 != n) _Alloc::deallocate(p,  n * sizeof(_TP));
 	}
 	
 };

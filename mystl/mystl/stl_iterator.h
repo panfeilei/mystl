@@ -78,7 +78,7 @@ iterator_categoty(const It&)
 
 template <class Iter>
 inline typename iterator_traits<Iter>::value_type*
-__value_type(const Iter&)
+value_type(const Iter&)
 {
 	return static_cast<typename iterator_traits<Iter>::value_type*>(0);
 }

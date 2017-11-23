@@ -26,7 +26,7 @@ inline destory(T first, T last)
 template<class Forward,class T>
 inline _destory(Forward first, Forward last, T*)
 {
-	//typedef typename _type_traits<T>::has_trivial_destructor trivial_destructor;
+	typedef typename _type_traits<T>::has_trivial_destructor trivial_destructor;
 	_destory_aux(first, last, trivial_destructor());
 }
 
