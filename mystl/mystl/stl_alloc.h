@@ -1,6 +1,7 @@
 #include "stl_construct.h"
+#include "stdlib.h"
 
-
+#define __THROW_BAD_ALLOC throw std::bad_alloc()
 
 template<int inst>
 class _malloc_alloc_template
@@ -10,7 +11,7 @@ private:
 	static void *oom_realloc(void *, size_t);
 	static void(*_malloc_alloc_oom_handler)();
 public:
-	static void *allocate(rsize_t n)
+	static void *allocate(size_t n)
 	{
 		void *result = malloc(n);
 		if (0 == result) result = oom_malloc(n);
@@ -39,10 +40,11 @@ public:
 
 
 template<int inst>
-void (*_malloc_alloc_template::_malloc_alloc_oom_handler)() = 0; //分配内存失败的处理函�?
+void (*_malloc_alloc_template<inst>::_malloc_alloc_oom_handler)()=0;
+
 
 template<int inst>
-void *_malloc_alloc_template::oom_malloc(rsize_t n)
+void *_malloc_alloc_template<inst>::oom_malloc(size_t n)
 {
 	void (*my_malloc_handler)();
 	void *result;
@@ -58,7 +60,7 @@ void *_malloc_alloc_template::oom_malloc(rsize_t n)
 }
 
 template<int inst>
-void *_malloc_alloc_template::oom_realloc()
+void *_malloc_alloc_template<inst>::oom_realloc()
 {
 	void (*my_malloc_handler)();
 	void *result;
@@ -82,7 +84,7 @@ private:
 	static char* start_free = 0;
  	static char* end_free = 0;
 	static heap_size = 0;
-	static rsize_t ROUND_UP(rsize_t bytes)
+	static size_t ROUND_UP(size_t bytes)
 	{
 		return (bytes + _ALIGN - 1) & ~(_ALIGN - 1);
 	} 

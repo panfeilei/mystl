@@ -1,9 +1,9 @@
 #include "stl_alloc.h"
 
 typedef _default_alloc_template<true, 0> alloc;
+#define MAX(x,y) ((x)>(y)?(x):(y))
 
-
-template <class T, Alloc = alloc>
+template <class T, class Alloc = alloc>
 class vector
 {
 public:
@@ -26,7 +26,7 @@ protected:
 	 {
 		if(finish != end_of_storage)
 		{
-			costruct(finish, *(finish - 1));
+			costruct_mystl(finish, *(finish - 1));
 			++finish;
 			T x_copy = x;
 			//copy_backward(position, finish - 2, finish - 1);
@@ -40,8 +40,28 @@ protected:
 			iterator new_finish = new_start;
 			try
 			{
-				//new_finish = ininitialized_copy();
+				new_finish = uninitialized_copy(start, position, new_start);
+				construct(new_finish, x);
+				++new_finish;
+
+				//以下这句是否有必要？
+				//以下这句不仅仅复制备用空间，是从position到end都复制
+				new_finish = uninitialized_copy(position, finish, new_finish);
 			}
+			catch(...)
+			{
+				destory_mystl(new_start, new_finish);
+				__data_allocator::deallocate(new_start, len);
+				throw;
+			}
+
+			destory_mystl(begin(), end());
+			deallocate();
+
+			start = new_start;
+			finish = new_finish;
+			end_of_storage = new_start + len;
+			
 		}
 	 }
 	 void fill_initialliza(size_type n, const T& value)
@@ -59,7 +79,7 @@ protected:
 	 iterator allocate_and_fill(size_type n, const T& value)
 	 {
 	 	iterator result = __data_allocator::allocate(n);
-		//uninitialized_fill_n(result, n, x);
+		uninitialized_fill_n(result, n, x);
 		return result;
 	 }
 public:
@@ -67,7 +87,8 @@ public:
 	vector(size_type n, const T& value){fill_initialliza(n,value);}
 	vector(const vector<T, Alloc> &x)
 	{
-		//
+		size_type _len = x.size();
+		__data_allocator::allocate();
 	}
 	
 	template<class inputItertor>
@@ -78,7 +99,7 @@ public:
 
 	~vector()
 	{
-		destory(start, finish);
+		destory_mystl(start, finish);
 		deallocate();
 	}
 	explicit vector(size_type n){fill_initialliza(n, T());}
@@ -100,14 +121,14 @@ public:
 		}
 		else
 		{
-			//insert_aux(end(), x);
+			insert_aux(end(), x);
 		}
 	}
 
 	void pop_back()
 	{
 		--finish;
-		destory(finish);
+		destory_mystl(finish);
 	}
 
 	iterator erase(iterator position)
@@ -115,19 +136,159 @@ public:
 		if(position + 1 != end())
 			//copy(position + 1, finish, position);
 		--finish;
-		destory(finish);
+		destory_mystl(finish);
 		return position;
+	}
+	
+	iterator erase(iterator first, iterator last)
+	{
+		//iterator i = copy(last, finish, first);
+		destory_mystl(i, finish);
+		finish = finish - (last - first);
+		return first;
 	}
 
 	void resize(size_type new_size, const T& x)
 	{
 		if(new_size < size())
-			//erase(begin() + new_size, end());
+			erase(begin() + new_size, end());
 		
 		else
 			//insert(end(), new_size - size(), x);
 	}
 
 	void resize(size_type new_size){resize(new_size, T());}
-	//void clear(){erase(begin(), end());}
-};
+	void clear(){erase(begin(), end());}
+	
+	iterator insert(iterator pos, const T& x)
+	{
+		size_type n = pos - begin();
+		if(finish != end_of_storage && pos == end())
+		{
+			construct(finish, x);
+			++finish;
+		}
+		else
+			insert_aux(pos, x);
+
+		return begin() + n;
+	}
+
+	template<class CopyIterator>
+	void insert(iterator position, const CopyIterator _first, const CopyIterator _last)
+	{
+		if(_first != _last)
+		{
+			iterator old_finish = finish;
+			size_type _n = distance(_first, _last);
+			if(end_of_storage - finish > _n)
+			{
+				
+				size_type elem_after = finish - position;
+				
+				if(elem_after > _n)
+				{
+					uninitialized_copy(finish - n, finish, finish);
+					finish += n;
+					//copy_backward(position, old_finish - n, finish);
+					//copy(_first, _last, position);
+					
+				}
+				else
+				{
+					uninitialized_copy(_first + elem_after, _last, finish);
+					finish += n - elem_after;
+					uninitialized_copy(position, old_finish, finish);
+					finish += elem_after;
+					//copy(_first, _first + elem_after, position);
+					
+				}
+				
+			}
+			else
+			{
+				size_type old_size = size(); 
+				size_type new_len = old_size + MAX(old_size, _n);
+				iterator new_start = __data_allocator::allocate(new_len);
+				iterator new_finish = new_start;
+				try
+				{
+					new_finish = uninitialized_copy(start, position, new_start);
+					new_finish = uninitialized_copy(_first, _last, new_finish);
+					new_finish = uninitialized_copy(position, finish, new_finish);
+				}
+				catch
+				{
+
+				}
+				destory_mystl(start, finish);
+				deallocate();
+				start = new_start;
+				finish = new_finish;
+				end_of_storage = new_start + new_len;
+			}
+		}
+	}
+
+	
+	void insert(iterator position, size_type n, const T& x)
+	{
+		if(n != 0)
+		{
+			if(size_type(end_of_storage - finish) >= n)
+			{
+				T x_copy = x;
+				const size_type elems_after = finish - position;
+				iterator old_finish = finish;
+				if(elems_after > n)
+				{
+					uninitialized_copy(finish - n, finish, finish);
+					finish += n;
+					//copy_backward(position, old_finish - n, old_finish);
+					//fill(position, position + n, x_copy);
+				}
+				else
+				{
+					uninitialized_fill_n(finish, n - elems_after, x_copy);
+					finish += n - elems_after;
+					uninitialized_copy(position, old_finish, finish);
+					finish += elems_after;
+					//fill(position, old_finish, x_copy);
+				}
+
+				//个人认为上面的整个ifelse代码可以替换为以下代码
+				/*
+				copy_backward(position, finish, finish + n);
+				uninitialized_copy(position, position + n, x_copy);
+				*/
+			}
+			else
+			{
+				const size_type old_size = size();
+				const size_type len = old_size + MAX(old_size, n);
+				iterator new_start = __data_allocator::allocate(len);
+				iterator new_finish = new_start;
+				try
+				{
+					new_finish = uninitialized_copy(start, position, new_start);
+					new_finish = uninitialized_fill_n(new_finish, n, x);
+					new_finish = uninitialized_copy(position, finish, new_finish);
+				}
+				catch(...)
+				{
+					destory_mystl(new_start, new_finish);
+					__data_allocator::deallocate(new_start, len);
+					throw;
+				}
+
+				//主要调用析构函数
+				destory_mystl(start, finish);
+				//主要释放本身占的内存
+				deallocate();
+				start = new_start;
+				finish = new_finish;
+				end_of_storage = new_start + len;
+			}
+		}
+	}
+}
