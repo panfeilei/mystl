@@ -1,3 +1,4 @@
+#include "stl_alloc.h"
 
 
 struct input_iterator_tag{};
@@ -15,7 +16,7 @@ struct iterator_traits
 	typedef typename _iterator::difference_type 	difference_type;
 	typedef typename _iterator::reference 			reference;
 	
-}
+};
 
 template<class Tp>
 struct iterator_traits<Tp*>
@@ -23,10 +24,10 @@ struct iterator_traits<Tp*>
 	typedef random_iterator_tag  	iterator_category;
 	typedef  Tp 					value_type;
 	typedef  Tp* 					pointer;
-	typedef  ptrdiff_t 				difference_type;
+	typedef  std::ptrdiff_t 				difference_type;
 	typedef  Tp& 					reference;
 	
-}
+};
 
 template<class Tp>
 struct iterator_traits<const Tp*>
@@ -34,13 +35,13 @@ struct iterator_traits<const Tp*>
 	typedef  random_iterator_tag	iterator_category;
 	typedef  Tp 					value_type;
 	typedef  const Tp* 				pointer;
-	typedef  ptrdiff_t 				difference_type;
+	typedef  std::ptrdiff_t 				difference_type;
 	typedef  const Tp& 				reference;
 	
-}
+};
 
 template<class InputIterator>
-inline iterator_traits<InputIterator>::difference_type
+inline typename iterator_traits<InputIterator>::difference_type
 distance(InputIterator first, InputIterator last)
 {
 	typedef typename iterator_traits<InputIterator>::iterator_category category;
@@ -49,10 +50,10 @@ distance(InputIterator first, InputIterator last)
 
 
 template<class InputIterator>
-inline iterator_traits<InputIterator>::difference_type
+inline typename iterator_traits<InputIterator>::difference_type
 __distance(InputIterator first, InputIterator last, input_iterator_tag)
 {
-	iterator_traits<InputItertor>::difference_type n = 0;
+	typename iterator_traits<InputIterator>::difference_type n = 0;
 	while(first != last)
 	{
 		++first; ++n;
@@ -61,7 +62,7 @@ __distance(InputIterator first, InputIterator last, input_iterator_tag)
 }
 
 template<class RandomIterator>
-inline iterator_traits<InputIterator>::difference_type
+inline typename iterator_traits<RandomIterator>::difference_type
 __distance(RandomIterator first, RandomIterator last, random_iterator_tag)
 {
 	return last - first;
@@ -72,7 +73,7 @@ __distance(RandomIterator first, RandomIterator last, random_iterator_tag)
 template <class InputIterator, class Distance>
 inline void advance(InputIterator &i, Distance n, random_iterator_tag)
 {
-	_advance(i, n, iterator_categoty(InputIterator));
+	_advance(i, n, iterator_categoty(i));
 }
 
 

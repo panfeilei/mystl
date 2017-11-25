@@ -13,9 +13,9 @@ public:
 	typedef T* 				iterator;
 	typedef const T* 		const_iterator;
 	typedef T& 				reference;
-	typedef constT& 		const_reference;
+	typedef const T& 		const_reference;
 	typedef size_t 			size_type;
- 	typedef ptrdiff_t 		difference_type;
+ 	typedef std::ptrdiff_t 		difference_type;
 private:
 	 iterator start;
 	 iterator finish;
@@ -26,7 +26,7 @@ protected:
 	 {
 		if(finish != end_of_storage)
 		{
-			costruct_mystl(finish, *(finish - 1));
+			costruct_stl(finish, *(finish - 1));
 			++finish;
 			T x_copy = x;
 			//copy_backward(position, finish - 2, finish - 1);
@@ -50,12 +50,12 @@ protected:
 			}
 			catch(...)
 			{
-				destory_mystl(new_start, new_finish);
+				destory_stl(new_start, new_finish);
 				__data_allocator::deallocate(new_start, len);
 				throw;
 			}
 
-			destory_mystl(begin(), end());
+			destory_stl(begin(), end());
 			deallocate();
 
 			start = new_start;
@@ -79,7 +79,7 @@ protected:
 	 iterator allocate_and_fill(size_type n, const T& value)
 	 {
 	 	iterator result = __data_allocator::allocate(n);
-		uninitialized_fill_n(result, n, x);
+		uninitialized_fill_n(result, n, value);
 		return result;
 	 }
 public:
@@ -99,15 +99,15 @@ public:
 
 	~vector()
 	{
-		destory_mystl(start, finish);
+		destory_stl(start, finish);
 		deallocate();
 	}
 	explicit vector(size_type n){fill_initialliza(n, T());}
 
-	iterator begin(){return start;};
-	iterator end(){return finish};
+	iterator begin(){return start;}
+	iterator end(){return finish;}
 	size_type size(){return size_type(end() - begin());}
-	size_type capacity() const {end_of_starage - begin();}
+	size_type capacity() const {end_of_storage - begin();}
 	bool empty(){return begin() == end();}
 	reference operator[](size_type n){return *(begin() + n);} 
 	reference front(){return *begin();}
@@ -128,7 +128,7 @@ public:
 	void pop_back()
 	{
 		--finish;
-		destory_mystl(finish);
+		destory_stl(finish);
 	}
 
 	iterator erase(iterator position)
@@ -136,14 +136,15 @@ public:
 		if(position + 1 != end())
 			//copy(position + 1, finish, position);
 		--finish;
-		destory_mystl(finish);
+		destory_stl(finish);
 		return position;
 	}
 	
 	iterator erase(iterator first, iterator last)
 	{
-		//iterator i = copy(last, finish, first);
-		destory_mystl(i, finish);
+		iterator i;
+		//i = copy(last, finish, first);
+		destory_stl(i, finish);
 		finish = finish - (last - first);
 		return first;
 	}
@@ -154,7 +155,10 @@ public:
 			erase(begin() + new_size, end());
 		
 		else
-			//insert(end(), new_size - size(), x);
+		{
+			insert(end(), new_size - size(), x);
+		}
+			
 	}
 
 	void resize(size_type new_size){resize(new_size, T());}
@@ -180,13 +184,13 @@ public:
 		if(_first != _last)
 		{
 			iterator old_finish = finish;
-			size_type _n = distance(_first, _last);
-			if(end_of_storage - finish > _n)
+			size_type n = distance(_first, _last);
+			if(end_of_storage - finish > n)
 			{
 				
 				size_type elem_after = finish - position;
 				
-				if(elem_after > _n)
+				if(elem_after > n)
 				{
 					uninitialized_copy(finish - n, finish, finish);
 					finish += n;
@@ -208,7 +212,7 @@ public:
 			else
 			{
 				size_type old_size = size(); 
-				size_type new_len = old_size + MAX(old_size, _n);
+				size_type new_len = old_size + MAX(old_size, n);
 				iterator new_start = __data_allocator::allocate(new_len);
 				iterator new_finish = new_start;
 				try
@@ -217,11 +221,11 @@ public:
 					new_finish = uninitialized_copy(_first, _last, new_finish);
 					new_finish = uninitialized_copy(position, finish, new_finish);
 				}
-				catch
+				catch(...)
 				{
 
 				}
-				destory_mystl(start, finish);
+				destory_stl(start, finish);
 				deallocate();
 				start = new_start;
 				finish = new_finish;
@@ -276,13 +280,13 @@ public:
 				}
 				catch(...)
 				{
-					destory_mystl(new_start, new_finish);
+					destory_stl(new_start, new_finish);
 					__data_allocator::deallocate(new_start, len);
 					throw;
 				}
 
 				//主要调用析构函数
-				destory_mystl(start, finish);
+				destory_stl(start, finish);
 				//主要释放本身占的内存
 				deallocate();
 				start = new_start;
@@ -291,4 +295,4 @@ public:
 			}
 		}
 	}
-}
+};
