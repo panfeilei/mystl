@@ -1,3 +1,5 @@
+#ifndef STL_ALLOC_H
+#define STL_ALLOC_H
 #include "stl_construct.h"
 #include "stdlib.h"
 
@@ -265,5 +267,6 @@ public:
 	
 };
 
+#endif
 
  

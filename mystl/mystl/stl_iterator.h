@@ -1,5 +1,7 @@
-#include "stl_alloc.h"
 
+#ifndef STL_ITERATOR_H
+#define STL_ITERATOR_H
+#include "stl_alloc.h"
 
 struct input_iterator_tag{};
 struct output_iterator_tag{};
@@ -115,6 +117,7 @@ value_type(const Iter&)
 	return static_cast<typename iterator_traits<Iter>::value_type*>(0);
 }
 
+#endif
 
 
 

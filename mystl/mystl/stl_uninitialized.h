@@ -1,3 +1,6 @@
+#ifndef STL_UNINITIALIZED_H
+#define STL_UNINITIALIZED_H
+
 template<class Input, class Forward>
 Forward uninitialized_copy(Input first, Input last, Forward result)
 {
@@ -91,6 +94,6 @@ inline Forward __uninitialized_fill_n_aux(Forward first, Size n, const T& x, __f
 	for(; n > 0; --n, ++cur)
 		construct(&*cur, x);
 	return cur;
-		
-	
 }
+
+#endif

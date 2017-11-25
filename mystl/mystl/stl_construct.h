@@ -1,4 +1,7 @@
-#pragma once
+
+#ifndef STL_CONSTRUCT_H
+#define STL_CONSTRUCT_H
+
 #include <new>
 #include <iostream>
 #include "type_traits.h"
@@ -40,5 +43,6 @@ inline void _destory_aux_stl(T first, T last, __false_type)
 		destory_stl(&*first);
 }
 
+#endif
 
 

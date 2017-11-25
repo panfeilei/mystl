@@ -1,3 +1,5 @@
+#ifndef TYPE_TRAITS_H
+#define TYPE_TRAITS_H
 struct __true_type {
 };
 
@@ -83,16 +85,4 @@ struct __type_traits<double*>
    	typedef __false_type    is_POD_type;
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+#endif 
