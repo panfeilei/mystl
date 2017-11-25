@@ -7,9 +7,9 @@ template<int inst>
 class _malloc_alloc_template
 {
 private:
-	static void *oom_malloc(size_t);
-	static void *oom_realloc(void *, size_t);
-	static void(*_malloc_alloc_oom_handler)();
+	static void* oom_malloc(size_t);
+	static void* oom_realloc(void *, size_t);
+	static void (* _malloc_alloc_oom_handler)();
 public:
 	static void *allocate(size_t n)
 	{
@@ -40,11 +40,11 @@ public:
 
 
 template<int inst>
-void (*_malloc_alloc_template<inst>::_malloc_alloc_oom_handler)()=0;
+void (* _malloc_alloc_template<inst>::_malloc_alloc_oom_handler)()=0;
 
 
 template<int inst>
-void *_malloc_alloc_template<inst>::oom_malloc(size_t n)
+void* _malloc_alloc_template<inst>::oom_malloc(size_t n)
 {
 	void (*my_malloc_handler)();
 	void *result;
@@ -60,7 +60,7 @@ void *_malloc_alloc_template<inst>::oom_malloc(size_t n)
 }
 
 template<int inst>
-void *_malloc_alloc_template<inst>::oom_realloc()
+void* _malloc_alloc_template<inst>::oom_realloc(void* p, size_t n)
 {
 	void (*my_malloc_handler)();
 	void *result;
@@ -70,20 +70,20 @@ void *_malloc_alloc_template<inst>::oom_realloc()
 		my_malloc_handler = _malloc_alloc_oom_handler;
 		if (0 == my_malloc_handler) { __THROW_BAD_ALLOC; }
 		(*my_malloc_handler)();
-		result = realloc(n);
+		result = realloc(p, n);
 		if (result) return(result);
 	}
 }
 enum {_ALIGN = 8};
 enum {_MAX_BYTES = 128};
 enum {_NFREELISTS = _MAX_BYTES / _ALIGN};
-template<bool threads,int inst>
+template<bool threads, int inst>
 class _default_alloc_template
 {
 private:
-	static char* start_free = 0;
- 	static char* end_free = 0;
-	static heap_size = 0;
+	static char* start_free;
+ 	static char* end_free;
+	static size_t heap_size;
 	static size_t ROUND_UP(size_t bytes)
 	{
 		return (bytes + _ALIGN - 1) & ~(_ALIGN - 1);
@@ -107,7 +107,7 @@ private:
 
 		if (n > (size_t)_MAX_BYTES)
 		{
-			return _malloc_alloc_template::allocate(n);
+			return _malloc_alloc_template<0>::allocate(n);
 		}
 		my_free_list = free_list + FREELIST_INDEX(n);
 		result = *my_free_list;
@@ -128,7 +128,7 @@ private:
 
 		if (n > (size_t)_MAX_BYTES)
 		{
-			_malloc_alloc_template::deallocate(p, n);
+			_malloc_alloc_template<0>::deallocate(p, n);
 			return;
 		}
 
@@ -230,6 +230,18 @@ private:
 	}
 };
 
+template<bool threads, int inst>
+char* _default_alloc_template<threads, inst>::start_free = 0;
+
+template<bool threads, int inst>
+char* _default_alloc_template<threads, inst>::end_free = 0;
+
+template<bool threads, int inst>
+size_t _default_alloc_template<threads, inst>::heap_size = 0;
+
+
+
+
 template <class _TP, class _Alloc>
 class simple_alloc
 {
@@ -240,7 +252,7 @@ public:
 	}
 	static _TP* allocate(void)
 	{
-		return (_Tp*) _Alloc::allocate(sizeof(_TP));
+		return (_TP*) _Alloc::allocate(sizeof(_TP));
 	}
 	static _TP* deallocate(_TP* p)
 	{
