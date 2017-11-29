@@ -4,6 +4,9 @@
 #include "stdlib.h"
 
 #define __THROW_BAD_ALLOC throw std::bad_alloc()
+enum {_ALIGN = 8};
+enum {_MAX_BYTES = 128};
+enum {_NFREELISTS = _MAX_BYTES / _ALIGN};
 
 template<int inst>
 class _malloc_alloc_template
@@ -76,9 +79,7 @@ void* _malloc_alloc_template<inst>::oom_realloc(void* p, size_t n)
 		if (result) return(result);
 	}
 }
-enum {_ALIGN = 8};
-enum {_MAX_BYTES = 128};
-enum {_NFREELISTS = _MAX_BYTES / _ALIGN};
+
 template<bool threads, int inst>
 class _default_alloc_template
 {
@@ -86,6 +87,8 @@ private:
 	static char* start_free;
  	static char* end_free;
 	static size_t heap_size;
+	//static obj free_list[16]
+public:
 	static size_t ROUND_UP(size_t bytes)
 	{
 		return (bytes + _ALIGN - 1) & ~(_ALIGN - 1);
@@ -96,16 +99,16 @@ private:
 		char client_data[1];
 	};
 
-	static obj *volatile free_list[_NFREELISTS];
+	static obj* volatile free_list[_NFREELISTS];
 	static size_t FREELIST_INDEX(size_t bytes)
 	{
 		return((bytes + _ALIGN - 1) / (_ALIGN - 1));
 	}
 
-	static void *allocate(size_t n)
+	static void* allocate(size_t n)
 	{
-		obj * volatile *my_free_list;
-		obj * result;
+		obj* volatile* my_free_list;
+		obj* result;
 
 		if (n > (size_t)_MAX_BYTES)
 		{
@@ -115,7 +118,7 @@ private:
 		result = *my_free_list;
 		if (result == 0)
 		{
-			void *r = refill(ROUND_UP(n));
+			void* r = refill(ROUND_UP(n));
 			return r;
 		}
 
@@ -125,8 +128,8 @@ private:
 
 	static void deallocate(void *p, size_t n)
 	{
-		obj *q = (obj *)p;
-		obj *volatile * my_free_list;
+		obj* q = (obj *)p;
+		volatile obj* my_free_list;
 
 		if (n > (size_t)_MAX_BYTES)
 		{
@@ -139,13 +142,14 @@ private:
 		*my_free_list = q;
 	}
 
-	void * refill(size_t n)
+	static void* refill(size_t n)
 	{
 		int nobj = 20;
-		char *chunk = chunk_alloc(n, nobj);
-		obj *volatile *my_free_list;
-		obj *result;
-		obj *curren_obj, *next_obj;
+		char* chunk = chunk_alloc(n, nobj);
+		obj* volatile* my_free_list;
+		obj* result;
+		obj* curren_obj;
+		obj* next_obj;
 		int i;
 
 		if (1 == nobj) return chunk;
@@ -158,7 +162,7 @@ private:
 		{
 			curren_obj = next_obj;
 			next_obj = (obj *)((char *)next_obj + n);
-			if (nobj - 1 == n)
+			if (nobj - 1 == i)
 			{
 				curren_obj->free_list_link = 0;
 				break;
@@ -170,9 +174,9 @@ private:
 		return result;
 	}
     
-    char * chunk_alloc(size_t size, int &nobj)
+    static char* chunk_alloc(size_t size, int &nobj)
 	{
-		size_t *result;
+		char *result;
 		size_t total_byte = size * nobj;
 		size_t left_byte = start_free - end_free;
 
@@ -195,8 +199,8 @@ private:
 			size_t byte_to_get = total_byte * 2;
 			if(left_byte > 0)
 			{
-				obj* my_free_list = free_list + FREELIST_INDEX(left_byte);
-				((obj*)start_free)->free_list = *my_free_list;
+				obj* volatile* my_free_list = free_list + FREELIST_INDEX(left_byte);
+				((obj*)start_free)->free_list_link = *my_free_list;
 				*my_free_list = (obj*)start_free;
 			}
 
@@ -204,7 +208,7 @@ private:
 			if(start_free == 0)
 			{
 				size_t i;
-				obj* my_free_list;
+				obj* volatile* my_free_list;
 				obj* p;
 
 				for(i = size; i<_MAX_BYTES; i+= _ALIGN)
@@ -214,13 +218,13 @@ private:
 					if(0 != p)
 					{
 						*my_free_list = p->free_list_link;
-						start_free = p;
+						start_free = (char*)p;
 						end_free = start_free + i;
 						return chunk_alloc(size, nobj);
 					}
 				}
 				end_free = 0;
-				start_free = _default_alloc_template::allocate(byte_to_get);
+				start_free = (char*)_default_alloc_template::allocate(byte_to_get);
 			}
 			heap_size += byte_to_get;
 			end_free = start_free + byte_to_get;
@@ -240,6 +244,12 @@ char* _default_alloc_template<threads, inst>::end_free = 0;
 
 template<bool threads, int inst>
 size_t _default_alloc_template<threads, inst>::heap_size = 0;
+
+template <bool threads, int inst>
+typename _default_alloc_template<threads, inst>::obj* volatile
+_default_alloc_template<threads, inst>::free_list[_NFREELISTS]=
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, };
+
 
 
 

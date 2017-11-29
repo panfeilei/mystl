@@ -27,7 +27,7 @@ Forward __uninitialized_copy(Input first, Input last, Forward result, T*)
 template<class Input, class Forward>
 Forward __uninitialized_copy_aux(Input first, Input last, Forward result, __true_type)
 {
-	//return copy(first, last, result);
+	//return copy_stl(first, last, result);
 }
 
 template<class Input, class Forward>

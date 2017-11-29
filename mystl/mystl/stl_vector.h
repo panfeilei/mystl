@@ -1,5 +1,5 @@
 #include "stl_alloc.h"
-
+#include "stl_algobase.h"
 typedef _default_alloc_template<true, 0> alloc;
 #define MAX(x,y) ((x)>(y)?(x):(y))
 
@@ -116,7 +116,7 @@ public:
 	{
 		if(finish != end_of_storage)
 		{
-			construct(finish, x);
+			costruct_stl(finish, x);
 			++finish;
 		}
 		else
@@ -134,7 +134,7 @@ public:
 	iterator erase(iterator position)
 	{
 		if(position + 1 != end())
-			//copy(position + 1, finish, position);
+			copy_stl(position + 1, finish, position);
 		--finish;
 		destory_stl(finish);
 		return position;
@@ -143,7 +143,7 @@ public:
 	iterator erase(iterator first, iterator last)
 	{
 		iterator i;
-		//i = copy(last, finish, first);
+		i = copy_stl(last, finish, first);
 		destory_stl(i, finish);
 		finish = finish - (last - first);
 		return first;
@@ -195,7 +195,7 @@ public:
 					uninitialized_copy(finish - n, finish, finish);
 					finish += n;
 					//copy_backward(position, old_finish - n, finish);
-					//copy(_first, _last, position);
+					copy_stl(_first, _last, position);
 					
 				}
 				else
@@ -204,7 +204,7 @@ public:
 					finish += n - elem_after;
 					uninitialized_copy(position, old_finish, finish);
 					finish += elem_after;
-					//copy(_first, _first + elem_after, position);
+					copy_stl(_first, _first + elem_after, position);
 					
 				}
 				
@@ -248,7 +248,7 @@ public:
 				{
 					uninitialized_copy(finish - n, finish, finish);
 					finish += n;
-					//copy_backward(position, old_finish - n, old_finish);
+					copy_backward(position, old_finish - n, old_finish);
 					//fill(position, position + n, x_copy);
 				}
 				else

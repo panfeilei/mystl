@@ -1,10 +1,15 @@
 #include <iostream>
-#include "stl_algobase.h"
+#include ".\stl_alloc.h"
+#include <string.h>
 using namespace std;
-
-
+typedef _default_alloc_template<true, 0> alloc;
 int main()
 {
-    const char *p ="w hello";
+    
+    _default_alloc_template<true,0> __data_allocator;
+    char *p = (char*)__data_allocator.allocate(sizeof(char) * 64);
+    memset(p, 0,sizeof(p));
+    strcpy(p, "fff");
     cout<<p;
+        
 }

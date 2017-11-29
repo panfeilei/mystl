@@ -5,6 +5,7 @@
 #include <new>
 #include <iostream>
 #include "type_traits.h"
+#include "stl_iterator.h"
 template<class T>
 inline void _destory_aux_stl(T first, T last, __true_type)
 {}

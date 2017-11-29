@@ -103,7 +103,7 @@ inline void __advance(randomIterator &i, Distance n, random_iterator_tag)
 
 template <class It>
 inline typename iterator_traits<It>::iterator_category
-iterator_categoty(const It&)
+iterator_category(const It&)
 {
 	typedef typename iterator_traits<It>::iterator_category catrgory;
 	return catrgory();
