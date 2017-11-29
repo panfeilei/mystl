@@ -129,7 +129,7 @@ public:
 	static void deallocate(void *p, size_t n)
 	{
 		obj* q = (obj *)p;
-		volatile obj* my_free_list;
+		obj* volatile* my_free_list;
 
 		if (n > (size_t)_MAX_BYTES)
 		{

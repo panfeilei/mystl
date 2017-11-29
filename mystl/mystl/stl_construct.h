@@ -17,7 +17,7 @@ inline void _destory_stl(Forward first, Forward last, T*)
 }
 
 template<class T1, class T2>
-inline void costruct_stl(T1 *p, const T2& value)
+inline void construct_stl(T1 *p, const T2& value)
 {
 	new (p) T1(value);
 }

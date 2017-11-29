@@ -1,5 +1,6 @@
 #include "stl_alloc.h"
 #include "stl_algobase.h"
+#include "stl_uninitialized.h"
 typedef _default_alloc_template<true, 0> alloc;
 #define MAX(x,y) ((x)>(y)?(x):(y))
 
@@ -26,7 +27,7 @@ protected:
 	 {
 		if(finish != end_of_storage)
 		{
-			costruct_stl(finish, *(finish - 1));
+			construct_stl(finish, *(finish - 1));
 			++finish;
 			T x_copy = x;
 			//copy_backward(position, finish - 2, finish - 1);
@@ -41,7 +42,7 @@ protected:
 			try
 			{
 				new_finish = uninitialized_copy(start, position, new_start);
-				construct(new_finish, x);
+				construct_stl(new_finish, x);
 				++new_finish;
 
 				//以下这句是否有必要？
@@ -69,7 +70,7 @@ protected:
 		start = allocate_and_fill(n, value);
 		finish = start + n;
 		end_of_storage = finish;
-	 };
+	 }
 	 void deallocate()
 	 {
 	 	if(start)
@@ -116,7 +117,7 @@ public:
 	{
 		if(finish != end_of_storage)
 		{
-			costruct_stl(finish, x);
+			construct_stl(finish, x);
 			++finish;
 		}
 		else
