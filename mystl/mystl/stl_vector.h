@@ -89,7 +89,8 @@ public:
 	vector(const vector<T, Alloc> &x)
 	{
 		size_type _len = x.size();
-		__data_allocator::allocate();
+		allocate_and_fill(_len, T());
+		finish = uninitialized_copy(x.begin(), x.end(), start);
 	}
 	
 	template<class inputItertor>
@@ -105,9 +106,9 @@ public:
 	}
 	explicit vector(size_type n){fill_initialliza(n, T());}
 
-	iterator begin(){return start;}
-	iterator end(){return finish;}
-	size_type size(){return size_type(end() - begin());}
+	iterator begin() const {return start;}
+	iterator end() const {return finish;}
+	size_type size() const {return size_type(end() - begin());}
 	size_type capacity() const {end_of_storage - begin();}
 	bool empty(){return begin() == end();}
 	reference operator[](size_type n){return *(begin() + n);} 

@@ -57,7 +57,7 @@ void __uninitialized_fill(Forward first, Forward last, const T& x)
 template<class Forward, class T>
 void __uninitialized_fill_aux(Forward first, Forward last, const T& x, __true_type)
 {
-	//fill(first, last, x);
+	fill(first, last, x);
 }
 
 template<class Forward, class T>
@@ -70,9 +70,18 @@ void __uninitialized_fill_aux(Forward first, Forward last, const T& x, __false_t
 
 
 template<class Forward, class Size ,class T>
-void uninitialized_fill_n(Forward first, Size n, const T& x)
+inline Forward __uninitialized_fill_n_aux(Forward first, Size n, const T& x, __true_type)
 {
-	return __uninitialized_fill_n(first, n, x, value_type(first));
+	return fill_n(first, n, x);
+}
+
+template<class Forward, class Size ,class T>
+inline Forward __uninitialized_fill_n_aux(Forward first, Size n, const T& x, __false_type)
+{
+	Forward cur = first;
+	for(; n > 0; --n, ++cur)
+		construct_stl(&*cur, x);
+	return cur;
 }
 
 template<class Forward, class Size ,class T, class T1>
@@ -83,18 +92,10 @@ inline Forward __uninitialized_fill_n(Forward first, Size n, const T& x, T1*)
 }
 
 template<class Forward, class Size ,class T>
-inline Forward __uninitialized_fill_n_aux(Forward first, Size n, const T& x, __true_type)
+inline Forward uninitialized_fill_n(Forward first, Size n, const T& x)
 {
-	//return fill_n(first, n, x);
+	return __uninitialized_fill_n(first, n, x, value_type(first));
 }
 
-template<class Forward, class Size ,class T>
-inline Forward __uninitialized_fill_n_aux(Forward first, Size n, const T& x, __false_type)
-{
-	Forward cur = first;
-	for(; n > 0; --n, ++cur)
-		construct(&*cur, x);
-	return cur;
-}
 
 #endif
