@@ -1,6 +1,7 @@
 #include "stl_alloc.h"
 #include "stl_algobase.h"
 #include "stl_uninitialized.h"
+#include "stl_iterator.h"
 typedef _default_alloc_template<true, 0> alloc;
 #define MAX(x,y) ((x)>(y)?(x):(y))
 
@@ -94,6 +95,23 @@ protected:
 		uninitialized_fill_n(result, n, value);
 		return result;
 	 }
+
+	 template<class Integer>
+	 void initialize_aux(Integer n, Integer value, __true_type)
+	 {
+	 	fill_initialliza(n,value);
+	 }
+
+	template<class InputIterator>
+	void initialize_aux(InputIterator first, InputIterator last, __false_type)
+	{
+		size_type n = 0;
+		n = distance(first, last);
+		start = __data_allocator::allocate(n);
+		end_of_storage = start + n;
+		finish = uninitialized_copy(first, last, start);
+	}
+	 
 public:
 	explicit vector():start(0), finish(0), end_of_storage(0){}
 	vector(size_type n, const T& value){fill_initialliza(n,value);}
@@ -108,11 +126,8 @@ public:
 	template<class inputItertor>
 	vector(inputItertor first, inputItertor last)
 	{
-		size_type n = 0;
-		n = distance(first, last);
-		start = __data_allocator::allocate(n);
-		end_of_storage = start + n;
-		finish = uninitialized_copy(first, last, start);
+		typedef typename Is_integer<inputItertor>::_integer is_integer;
+		initialize_aux(first, last, is_integer());
 	}
 
 	~vector()
@@ -213,7 +228,7 @@ public:
 		size_type n = pos - begin();
 		if(finish != end_of_storage && pos == end())
 		{
-			construct(finish, x);
+			construct_stl(finish, x);
 			++finish;
 		}
 		else
