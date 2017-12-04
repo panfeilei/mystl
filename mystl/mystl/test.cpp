@@ -26,7 +26,8 @@ int main()
     h.push_back(3);
     h.push_back(4);
     h.push_back(5);
-    vector<int> g(h);
+    h.push_back(6);
+    vector<int> g(h.begin(), h.begin() + 4);
     vector<int>::iterator iter;
     for(iter = g.begin(); iter != g.end(); iter++)
         cout<< *iter;

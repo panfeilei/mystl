@@ -6,6 +6,22 @@
 #include <string.h>
 #include "type_traits.h"
 
+template<class Forward, class Tp>
+void fill(Forward first, Forward last, const Tp& value)
+{
+	for(;first != last; ++first)
+		*first = value;
+}
+
+template<class Forward, class Size,class Tp>
+void fill_n(Forward first, Size n, const Tp& value)
+{
+	for(; n > 0; --n, ++first)
+		*first = value;
+	return first;
+}
+
+
 template<class InputIterator, class OutputIterator, class Distance>
 inline OutputIterator __copy_d(InputIterator first, InputIterator last,
 								OutputIterator result, Distance *)
@@ -163,7 +179,5 @@ inline OutputIterator copy_backward_stl(InputIterator first, InputIterator last,
 {
 	return __copy_backward_dispatch<InputIterator, OutputIterator>::copy(first, last, result);
 }
-
-
 
 #endif

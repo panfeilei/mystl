@@ -30,7 +30,7 @@ protected:
 			construct_stl(finish, *(finish - 1));
 			++finish;
 			T x_copy = x;
-			//copy_backward(position, finish - 2, finish - 1);
+			copy_backward(position, finish - 2, finish - 1);
 			*position = x_copy;
 		}
 		else
@@ -46,7 +46,7 @@ protected:
 				++new_finish;
 
 				//以下这句是否有必要？
-				//以下这句不仅仅复制备用空间，是从position到end都复制
+				/*以下这句不仅仅复制备用空间，是从position到end都复制*/
 				new_finish = uninitialized_copy(position, finish, new_finish);
 			}
 			catch(...)
@@ -65,12 +65,14 @@ protected:
 			
 		}
 	 }
+	 
 	 void fill_initialliza(size_type n, const T& value)
 	 {
 		start = allocate_and_fill(n, value);
 		finish = start + n;
 		end_of_storage = finish;
 	 }
+	 
 	 void deallocate()
 	 {
 	 	if(start)
@@ -88,15 +90,20 @@ public:
 	vector(size_type n, const T& value){fill_initialliza(n,value);}
 	vector(const vector<T, Alloc> &x)
 	{
-		size_type _len = x.size() + 1;
-		fill_initialliza(_len, T());
+		size_type n = x.size();
+		start = __data_allocator::allocate(n);
+		end_of_storage = start + n;
 		finish = uninitialized_copy(x.begin(), x.end(), start);
 	}
 	
 	template<class inputItertor>
-	vector(inputItertor begin, inputItertor end)
+	vector(inputItertor first, inputItertor last)
 	{
-		//
+		size_type n = 0;
+		n = distance(first, last);
+		start = __data_allocator::allocate(n);
+		end_of_storage = start + n;
+		finish = uninitialized_copy(first, last, start);
 	}
 
 	~vector()
@@ -155,7 +162,6 @@ public:
 	{
 		if(new_size < size())
 			erase(begin() + new_size, end());
-		
 		else
 		{
 			insert(end(), new_size - size(), x);
@@ -175,8 +181,9 @@ public:
 			++finish;
 		}
 		else
+		{
 			insert_aux(pos, x);
-
+		}
 		return begin() + n;
 	}
 
@@ -189,16 +196,14 @@ public:
 			size_type n = distance(_first, _last);
 			if(end_of_storage - finish > n)
 			{
-				
+			
 				size_type elem_after = finish - position;
-				
 				if(elem_after > n)
 				{
 					uninitialized_copy(finish - n, finish, finish);
 					finish += n;
-					//copy_backward(position, old_finish - n, finish);
+					copy_backward(position, old_finish - n, finish);
 					copy_stl(_first, _last, position);
-					
 				}
 				else
 				{
@@ -207,7 +212,6 @@ public:
 					uninitialized_copy(position, old_finish, finish);
 					finish += elem_after;
 					copy_stl(_first, _first + elem_after, position);
-					
 				}
 				
 			}
@@ -225,7 +229,9 @@ public:
 				}
 				catch(...)
 				{
-
+					destory_stl(new_start, new_finish);
+					__data_allocator::deallocate(new_start, len);
+					throw;
 				}
 				destory_stl(start, finish);
 				deallocate();
@@ -251,7 +257,7 @@ public:
 					uninitialized_copy(finish - n, finish, finish);
 					finish += n;
 					copy_backward(position, old_finish - n, old_finish);
-					//fill(position, position + n, x_copy);
+					fill(position, position + n, x_copy);
 				}
 				else
 				{
@@ -259,7 +265,7 @@ public:
 					finish += n - elems_after;
 					uninitialized_copy(position, old_finish, finish);
 					finish += elems_after;
-					//fill(position, old_finish, x_copy);
+					fill(position, old_finish, x_copy);
 				}
 
 				//个人认为上面的整个ifelse代码可以替换为以下代码
@@ -287,9 +293,9 @@ public:
 					throw;
 				}
 
-				//主要调用析构函数
+				/*主要调用析构函数*/
 				destory_stl(start, finish);
-				//主要释放本身占的内存
+				/*主要释放本身占的内存*/
 				deallocate();
 				start = new_start;
 				finish = new_finish;
