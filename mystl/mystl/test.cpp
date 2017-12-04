@@ -19,9 +19,8 @@ int main()
     cout<<p;
         */
     
-    
+    /*
     vector<int> h;
-    
     h.push_back(1);
     h.push_back(2);
     h.push_back(3);
@@ -32,16 +31,13 @@ int main()
     for(iter = g.begin(); iter != g.end(); iter++)
         cout<< *iter;
     cout<<" "<<g.size();
+    */
     
     
-    /*
     int y[10] = {1,2,3,4,5,6,7,8,9,10};
     cout<<"d   ";
-    copy_backward_stl(y, y+5, y+9);
+    copy_backward_stl(y, y+3, y+5);
     for(int i =0; i< 10; i++)
-        cout<<*(y+i);*/
-    /*
-    for(int i =0; i< 10; ++i)
-        cout << i;
-    */
+        cout<<*(y+i) << " ";
+    
 }

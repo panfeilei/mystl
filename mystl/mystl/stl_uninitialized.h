@@ -65,7 +65,7 @@ void __uninitialized_fill_aux(Forward first, Forward last, const T& x, __false_t
 {
 	Forward cur = first;
 	for(; cur != last; ++cur)
-		construct(&*cur, x);
+		construct_stl(&*cur, x);
 }
 
 

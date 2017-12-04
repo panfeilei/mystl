@@ -33,7 +33,7 @@ inline OutputIterator __copy(InputIterator first, InputIterator last,
 }
 
 
-//class point
+/*class point*/
 template<class T>
 inline T* __copy_t(const T* first, const T* last, T* result, __false_type)
 {
@@ -41,7 +41,7 @@ inline T* __copy_t(const T* first, const T* last, T* result, __false_type)
 }
 
 
-//normal point
+/*normal point*/
 template<class T>
 inline T* __copy_t(const T* first, const T* last, T* result, __true_type)
 {
@@ -52,7 +52,7 @@ inline T* __copy_t(const T* first, const T* last, T* result, __true_type)
 template<class InputIterator, class OutputIterator>
 struct __copy_dispatch
 {
-	OutputIterator operator()(InputIterator first, InputIterator last, OutputIterator result)
+	static OutputIterator copy(InputIterator first, InputIterator last, OutputIterator result)
 	{
 		return  __copy(first, last, result, iterator_category(first));
 	}
@@ -61,7 +61,7 @@ struct __copy_dispatch
 template<class T>
 struct __copy_dispatch<T*, T*>
 {
-	T* operator()(T* first, T* last, T* result)
+	static T* copy(T* first, T* last, T* result)
 	{
 		typedef typename __type_traits<T>::has_trivial_assignment_operator t;
 		return __copy_t(first, last, result, t());
@@ -71,7 +71,7 @@ struct __copy_dispatch<T*, T*>
 template<class T>
 struct __copy_dispatch<const T*, T*>
 {
-	T* operator()(const T* first, const T* last, const T* result)
+	T* copy(const T* first, const T* last, const T* result)
 	{
 		typedef typename __type_traits<T>::has_trivial_assignment_operator t;
 		return __copy_t(first, last, result, t());
@@ -81,7 +81,7 @@ struct __copy_dispatch<const T*, T*>
 template <class InputIterator, class OutputIterator>
 inline OutputIterator copy_stl(InputIterator first, InputIterator last, OutputIterator result)
 {
-	return __copy_dispatch<InputIterator, OutputIterator>()(first, last, result);
+	return __copy_dispatch<InputIterator, OutputIterator>::copy(first, last, result);
 }
 
 inline char* copy_stl(char* first, char* last, char* result)
@@ -96,6 +96,74 @@ inline wchar_t* copy_stl(const wchar_t* first, const wchar_t* last, wchar_t* res
 	memmove(result, first, last - first);
 	return result + (last - first);
 }
+
+template<class InputIterator, class OutputIterator, class Distance>
+inline OutputIterator __copy_backward_d(InputIterator first, InputIterator last,
+								OutputIterator result, Distance *)
+{
+	for(Distance n = last - first; n > 0; --n)
+		*--result = *--last;
+	return result;
+}
+
+/*class point*/
+template<class T>
+inline T* __copy_backward_t(const T* first, const T* last, T* result, __false_type)
+{
+	return __copy_backward_d(first, last, result, (std::ptrdiff_t*)0);
+}
+
+/*normal point*/
+template<class T>
+inline T* __copy_backward_t(const T* first, const T* last, T* result, __true_type)
+{
+	const ptrdiff_t num = last - first;
+	memmove(result - num, first, sizeof(T) * num);
+	return result - num;
+}
+
+
+template<class InputIterator, class OutputIterator>
+inline OutputIterator __copy_backward(InputIterator first, InputIterator last,
+								OutputIterator result, input_iterator_tag)
+{
+	while(last != first)
+		*--result = *--first;
+	return result;
+}
+								
+template<class InputIterator, class OutputIterator>
+inline OutputIterator __copy_backward(InputIterator first, InputIterator last,
+										OutputIterator result, random_iterator_tag)
+{
+	__copy_backward_d(first, last, result, distance_type(first));
+}
+
+template<class InputIterator, class OutputIterator>
+struct __copy_backward_dispatch
+{
+	static OutputIterator copy(InputIterator first, InputIterator last, OutputIterator result)
+	{
+		return  __copy_backward(first, last, result, iterator_category(first));
+	}
+};
+
+template<class T>
+struct __copy_backward_dispatch<T*, T*>
+{
+	static T* copy(T* first, T* last, T* result)
+	{
+		typedef typename __type_traits<T>::has_trivial_assignment_operator t;
+		return __copy_backward_t(first, last, result, t());
+	}
+};
+
+template <class InputIterator, class OutputIterator>
+inline OutputIterator copy_backward_stl(InputIterator first, InputIterator last, OutputIterator result)
+{
+	return __copy_backward_dispatch<InputIterator, OutputIterator>::copy(first, last, result);
+}
+
 
 
 #endif
