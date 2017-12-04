@@ -250,10 +250,6 @@ typename _default_alloc_template<threads, inst>::obj* volatile
 _default_alloc_template<threads, inst>::free_list[_NFREELISTS]=
 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, };
 
-
-
-
-
 template <class _TP, class _Alloc>
 class simple_alloc
 {

@@ -21,7 +21,6 @@ void fill_n(Forward first, Size n, const Tp& value)
 	return first;
 }
 
-
 template<class InputIterator, class OutputIterator, class Distance>
 inline OutputIterator __copy_d(InputIterator first, InputIterator last,
 								OutputIterator result, Distance *)
@@ -30,7 +29,6 @@ inline OutputIterator __copy_d(InputIterator first, InputIterator last,
 		*result = *first;
 	return result;
 }
-
 
 template<class InputIterator, class OutputIterator>
 inline OutputIterator __copy(InputIterator first, InputIterator last,
@@ -55,7 +53,6 @@ inline T* __copy_t(const T* first, const T* last, T* result, __false_type)
 {
 	return __copy_d(first, last, result, (std::ptrdiff_t*)0);
 }
-
 
 /*normal point*/
 template<class T>
@@ -106,7 +103,6 @@ inline char* copy_stl(char* first, char* last, char* result)
 	return result + (last - first);
 }
 
-
 inline wchar_t* copy_stl(const wchar_t* first, const wchar_t* last, wchar_t* result)
 {
 	memmove(result, first, last - first);
@@ -137,7 +133,6 @@ inline T* __copy_backward_t(const T* first, const T* last, T* result, __true_typ
 	memmove(result - num, first, sizeof(T) * num);
 	return result - num;
 }
-
 
 template<class InputIterator, class OutputIterator>
 inline OutputIterator __copy_backward(InputIterator first, InputIterator last,

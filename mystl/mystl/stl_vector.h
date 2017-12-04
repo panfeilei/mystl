@@ -30,7 +30,7 @@ protected:
 			construct_stl(finish, *(finish - 1));
 			++finish;
 			T x_copy = x;
-			copy_backward(position, finish - 2, finish - 1);
+			copy_backward_stl(position, finish - 2, finish - 1);
 			*position = x_copy;
 		}
 		else
@@ -72,6 +72,15 @@ protected:
 		finish = start + n;
 		end_of_storage = finish;
 	 }
+
+	 template<class Forward>
+	 iterator allocate_and_copy(Forward first, Forward last, size_type n)
+	 {
+	 	iterator result = __data_allocator::allocate(n);
+		uninitialized_copy(first, last, result);
+		return result;
+	 }
+
 	 
 	 void deallocate()
 	 {
@@ -121,6 +130,36 @@ public:
 	reference operator[](size_type n){return *(begin() + n);} 
 	reference front(){return *begin();}
 	reference back(){return *(end() - 1);}
+	
+	template<class Tp>
+	vector<Tp>& operator=(const vector<T, Alloc> &x)
+	{
+		if(this != &x)
+		{
+			size_type n = x.size();
+			if(n > capacity())
+			{
+				iterator tmp = allocate_and_copy(x.begin(), x.end(), n);
+				destory_stl(start, finish);
+				deallocate();
+				start = tmp;
+				end_of_storage = start + n;
+			}
+			else if(size() > n)
+			{
+				iterator i = copy_stl(x.begin(), x.end(), start);
+				destory_stl(i, finish);
+			}
+			else
+			{
+				copy_stl(x.begin(), x.begin() + size(), start);
+				uninitialized_copy(x.begin() + size(), x.end(), finish);
+			}
+			finish = start + n;
+		}
+		return *this;	
+	}
+	
 	void push_back(const T& x)
 	{
 		if(finish != end_of_storage)
@@ -163,10 +202,7 @@ public:
 		if(new_size < size())
 			erase(begin() + new_size, end());
 		else
-		{
 			insert(end(), new_size - size(), x);
-		}
-			
 	}
 
 	void resize(size_type new_size){resize(new_size, T());}
@@ -230,7 +266,7 @@ public:
 				catch(...)
 				{
 					destory_stl(new_start, new_finish);
-					__data_allocator::deallocate(new_start, len);
+					__data_allocator::deallocate(new_start, n);
 					throw;
 				}
 				destory_stl(start, finish);
