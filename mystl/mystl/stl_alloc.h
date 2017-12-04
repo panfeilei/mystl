@@ -43,7 +43,6 @@ public:
 	}
 };
 
-
 template<int inst>
 void (* _malloc_alloc_template<inst>::_malloc_alloc_oom_handler)()=0;
 
@@ -87,7 +86,6 @@ private:
 	static char* start_free;
  	static char* end_free;
 	static size_t heap_size;
-	//static obj free_list[16]
 public:
 	static size_t ROUND_UP(size_t bytes)
 	{
@@ -229,10 +227,7 @@ public:
 			heap_size += byte_to_get;
 			end_free = start_free + byte_to_get;
 			return chunk_alloc(size, nobj);
-
 		}
-
-		
 	}
 };
 

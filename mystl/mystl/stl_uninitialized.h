@@ -9,8 +9,6 @@ Forward __uninitialized_copy(Input first, Input last, Forward result, T*)
 	return __uninitialized_copy_aux(first, last, result, is_POD());
 }
 
-
-
 template<class Input, class Forward>
 Forward __uninitialized_copy_aux(Input first, Input last, Forward result, __true_type)
 {
@@ -23,13 +21,11 @@ Forward uninitialized_copy(Input first, Input last, Forward result)
 	return __uninitialized_copy(first, last, result, value_type(result));
 }
 
-
 inline wchar_t* uninitialized_copy(const wchar_t* first, const wchar_t* last, wchar_t* result)
 {
 	memmove(result, first, last-first);
 	return result + (last - first);
 }
-
 
 template<class Input, class Forward>
 Forward __uninitialized_copy_aux(Input first, Input last, Forward result, __false_type)
@@ -53,7 +49,6 @@ void __uninitialized_fill(Forward first, Forward last, const T& x)
 	__uninitialized_fill_aux(first, last, x, is_POD());
 }
 
-
 template<class Forward, class T>
 void __uninitialized_fill_aux(Forward first, Forward last, const T& x, __true_type)
 {
@@ -67,7 +62,6 @@ void __uninitialized_fill_aux(Forward first, Forward last, const T& x, __false_t
 	for(; cur != last; ++cur)
 		construct_stl(&*cur, x);
 }
-
 
 template<class Forward, class Size ,class T>
 inline Forward __uninitialized_fill_n_aux(Forward first, Size n, const T& x, __true_type)
@@ -96,6 +90,5 @@ inline Forward uninitialized_fill_n(Forward first, Size n, const T& x)
 {
 	return __uninitialized_fill_n(first, n, x, value_type(first));
 }
-
 
 #endif

@@ -82,7 +82,6 @@ protected:
 		return result;
 	 }
 
-	 
 	 void deallocate()
 	 {
 	 	if(start)

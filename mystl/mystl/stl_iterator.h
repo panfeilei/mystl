@@ -50,7 +50,6 @@ distance(InputIterator first, InputIterator last)
 	return __distance(first, last, category());
 }
 
-
 template<class InputIterator>
 inline typename iterator_traits<InputIterator>::difference_type
 __distance(InputIterator first, InputIterator last, input_iterator_tag)
@@ -70,14 +69,11 @@ __distance(RandomIterator first, RandomIterator last, random_iterator_tag)
 	return last - first;
 }
 
-
-
 template <class InputIterator, class Distance>
 inline void advance(InputIterator &i, Distance n, random_iterator_tag)
 {
 	_advance(i, n, iterator_categoty(i));
 }
-
 
 template <class InputIterator, class Distance>
 inline void __advance(InputIterator &i, Distance n, input_iterator_tag)
@@ -100,7 +96,6 @@ inline void __advance(randomIterator &i, Distance n, random_iterator_tag)
 	i += n;
 }
 
-
 template <class It>
 inline typename iterator_traits<It>::iterator_category
 iterator_category(const It&)
@@ -108,7 +103,6 @@ iterator_category(const It&)
 	typedef typename iterator_traits<It>::iterator_category catrgory;
 	return catrgory();
 }
-
 
 template <class Iter>
 inline typename iterator_traits<Iter>::value_type*
@@ -118,6 +112,4 @@ value_type(const Iter&)
 }
 
 #endif
-
-
 
