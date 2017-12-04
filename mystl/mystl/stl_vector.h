@@ -88,8 +88,8 @@ public:
 	vector(size_type n, const T& value){fill_initialliza(n,value);}
 	vector(const vector<T, Alloc> &x)
 	{
-		size_type _len = x.size();
-		allocate_and_fill(_len, T());
+		size_type _len = x.size() + 1;
+		fill_initialliza(_len, T());
 		finish = uninitialized_copy(x.begin(), x.end(), start);
 	}
 	
