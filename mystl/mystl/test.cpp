@@ -3,9 +3,8 @@
 
 #include ".\stl_vector.h"
 #include ".\stl_algobase.h"
+#include ".\stl_tree.h"
 
-//#include <vector>
-//#include <algorithm>
 using namespace std;
 void fun1(char* value)
 {

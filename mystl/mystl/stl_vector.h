@@ -2,7 +2,7 @@
 #include "stl_algobase.h"
 #include "stl_uninitialized.h"
 #include "stl_iterator.h"
-typedef _default_alloc_template<true, 0> alloc;
+
 #define MAX(x,y) ((x)>(y)?(x):(y))
 
 template <class T, class Alloc = alloc>

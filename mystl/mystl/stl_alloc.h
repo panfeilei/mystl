@@ -8,6 +8,7 @@ enum {_ALIGN = 8};
 enum {_MAX_BYTES = 128};
 enum {_NFREELISTS = _MAX_BYTES / _ALIGN};
 
+
 template<int inst>
 class _malloc_alloc_template
 {
@@ -267,6 +268,7 @@ public:
 	}
 	
 };
+	typedef _default_alloc_template<true, 0> alloc;
 
 #endif
 

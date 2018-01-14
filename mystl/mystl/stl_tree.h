@@ -1,3 +1,6 @@
+#ifndef STL_TREE_H
+#define STL_TREE_H
+//#include<pair>
 typedef bool __rb_tree_color_type;
 const __rb_tree_color_type __rb_tree_red = false;
 const __rb_tree_color_type __rb_tree_black = true;
@@ -28,7 +31,7 @@ struct __rb_tree_node_base
 template<class Value>
 struct __rb_tree_node: public __rb_tree_node_base
 {
-    typedef __rb_tree_node<value>* link_type;
+    typedef __rb_tree_node<Value>* link_type;
     Value value_field;
 };
 
@@ -85,7 +88,9 @@ struct __rb_tree_base_iterator
     }
 };
 
-template<calss Value, class Ref, class Ptr>
+
+
+template<class Value, class Ref, class Ptr>
 struct __rb_tree_iterator:public __rb_tree_base_iterator
 {
 	typedef Value value_type;
@@ -113,14 +118,17 @@ struct __rb_tree_iterator:public __rb_tree_base_iterator
 	}
 };
 
-template<class Key, class KeyofValue, class Compare, class Alloc = alloc>
+
+
+template<class Key, class Value, class KeyofValue, class Compare, class Alloc = alloc>
 class rb_tree
 {
 protected:
 	typedef void* void_pointer;
 	typedef __rb_tree_node_base* base_ptr;
 	typedef __rb_tree_node<Value> rb_tree_node;
-	typedef simple_alloc<rb_tree_node, Alloc> rb__tree_node_allocator;
+	typedef simple_alloc<rb_tree_node, Alloc> rb_tree_node_allocator;
+	typedef __rb_tree_color_type color_type;
 public:
 	typedef Key key_type;
 	typedef Value value_type;
@@ -169,7 +177,7 @@ protected:
 	static link_type& right(link_type x){return (link_type)(x->right);}
 	static link_type& parent(link_type x){return (link_type&)(x->parent);}
 	static reference value(link_type x){return x->value_field;}
-	static const Key& key(link_type x){return KeyofValue()(value(x))};
+	static const Key& key(link_type x){return KeyofValue()(value(x));};
 	static color_type& color(link_type x){return (color_type&)(x->color);}
 	
 	static link_type& left(base_ptr x){return (link_type&)(x->left);}
@@ -198,24 +206,30 @@ private:
 	}
 
 public:
-	rb_tree(const Compare& comp = Compare()):node_count(0), key_compare(comp){init();)
+	rb_tree(const Compare& comp = Compare()):node_count(0), key_compare(comp) 
+	{
+		init();
+	}
 
 	~rb_tree()
 	{
-		clear();
+		//clear();
 		put_node(header);
 	}
 
 	rb_tree<Key, Value, KeyofValue, Compare, Alloc>&
 	operator=(const rb_tree<Key, Value, KeyofValue, Compare, Alloc>& x);
 
-	Compare key_compare() const {return key_compare;}
+	Compare key_comp() const 
+	{return key_compare;}
 	iterator begin(){return leftmost();}
 	iterator end() {return header;}
 	bool empty() const {return node_count;}
 	size_type size() const {return node_count;}
 	size_type max_size() const{return size_type(-1);}
 
-	pair<iterator, bool> insert_unique(const value_type& x);
+	//pair<iterator, bool> insert_unique(const value_type& x);
 	iterator insert_equal(const value_type& x);
-}
+};
+
+#endif
