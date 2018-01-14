@@ -14,6 +14,7 @@ typedef struct rbtree_node
 
 struct rbtree
 {
+    
     rbtree_node *root;
     void rb_insert_fixup(rbtree_node* node)
     {
