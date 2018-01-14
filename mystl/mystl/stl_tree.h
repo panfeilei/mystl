@@ -1,6 +1,6 @@
 #ifndef STL_TREE_H
 #define STL_TREE_H
-//#include<pair>
+#include "./stl_pair.h"
 typedef bool __rb_tree_color_type;
 const __rb_tree_color_type __rb_tree_red = false;
 const __rb_tree_color_type __rb_tree_black = true;
@@ -34,6 +34,7 @@ struct __rb_tree_node: public __rb_tree_node_base
     typedef __rb_tree_node<Value>* link_type;
     Value value_field;
 };
+
 
 struct __rb_tree_base_iterator
 {
@@ -141,7 +142,7 @@ public:
 	typedef ptrdiff_t difference_type;
 protected:
 	link_type get_node(){return rb_tree_node_allocator::allocate();}
-	void put_node(link_type p){rb_tree_node_allocator::deallocator(p);}
+	void put_node(link_type p){rb_tree_node_allocator::deallocate(p);}
 
 	link_type create_node(const value_type& x)
 	{
@@ -228,7 +229,7 @@ public:
 	size_type size() const {return node_count;}
 	size_type max_size() const{return size_type(-1);}
 
-	//pair<iterator, bool> insert_unique(const value_type& x);
+	pair<iterator, bool> insert_unique(const value_type& x);
 	iterator insert_equal(const value_type& x);
 };
 

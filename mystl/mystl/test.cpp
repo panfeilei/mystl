@@ -51,6 +51,7 @@ int main()
     for(int i =0; i< 10; i++)
         cout<<*(y+i) << " ";
     */
+    rb_tree<int ,int,int,int> g;
     char* v = new char[20];
     fun(v);
     cout<<v;
