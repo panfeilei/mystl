@@ -229,11 +229,33 @@ public:
 	size_type size() const {return node_count;}
 	size_type max_size() const{return size_type(-1);}
 
-	pair<iterator, bool> insert_unique(const value_type& x);
+	pair<iterator, bool> insert_unique(const value_type& v)
+	{
+		link_type y = header;
+		link_type x = root();
+		bool comp = true;
+		while(x!=0)
+		{
+			y = x;
+			comp = key_compare(KeyofValue()(v), key(x));
+			x = comp ? left(x) : right(x);
+		}
+		iterator j = iterator(y);
+		if(comp)
+		{
+			if(j == begin())
+				return pair<iterator, bool>(__insert(x, y, v), true);
+			else
+				--j;
+		}
+		if(key_compare(key(j.node), KeyofValue()(v)))
+			return pair<iterator, bool>(__insert(x, y, v), true);
+
+		return pair<iterator, bool>(j, false);
+	}
+	
 	iterator insert_equal(const value_type& x);
 };
-
-template<class Key, class Value, class KeyofValue, class Compare, class Alloc>
 
 
 #endif
