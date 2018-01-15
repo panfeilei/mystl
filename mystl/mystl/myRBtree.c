@@ -61,18 +61,18 @@ struct rbtree
         {
             tmp = x;
             if(new_node->key < x->key)
-            x = x->left;
+                x = x->left;
             else 
-            x = x->right;
+                x = x->right;
         }
         new_node->p = tmp;
         
         if(tmp == NULL)
-        root = new_node; 
+            root = new_node; 
         else if(new_node->key < tmp->key)
-        tmp->left = new_node;
+            tmp->left = new_node;
         else
-        tmp->right = new_node;
+            tmp->right = new_node;
         
         new_node->color = RED;
         new_node->left = NULL;
@@ -85,14 +85,14 @@ struct rbtree
         rbtree_node* y = x->right;
         x->right = y->left;
         if(y->left != NULL)
-        y->left->p = x;
+            y->left->p = x;
         
         if(x->p == NULL) 
-        root = y;
+            root = y;
         else if(x->p->left == x) 
-        x->p->left = y;
+            x->p->left = y;
         else 
-        x->p->right = y;
+            x->p->right = y;
         
         y->p = x->p;
         y->left = x;
@@ -104,14 +104,14 @@ struct rbtree
         rbtree_node* x = y->left;
         y->left = x->right;
         if(x->right != NULL)
-        x->right->p = y;
+            x->right->p = y;
         
         if(y->p == NULL)
-        root = x;
+            root = x;
         else if(y->p->left == y)
-        y->p->left = x;
+            y->p->left = x;
         else
-        y->p->right = x;
+            y->p->right = x;
         
         x->p = y->p;
         x->right = y;
