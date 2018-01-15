@@ -233,4 +233,7 @@ public:
 	iterator insert_equal(const value_type& x);
 };
 
+template<class Key, class Value, class KeyofValue, class Compare, class Alloc>
+
+
 #endif
