@@ -228,7 +228,7 @@ private:
 		return iterator(z);
 	}
 	
-	inlinev void __rb_tree_rebalance(__rb_tree_bode_base* x, __rb_tree_node_base*& root)
+	inline void __rb_tree_rebalance(__rb_tree_node_base* x, __rb_tree_node_base*& root)
 	{
 		x->color = __rb_tree_red;
 		while(x != root && x->parent->color == __rb_tree_red)
@@ -280,7 +280,41 @@ private:
 		}
 		root->color = __rb_tree_black;
 	}
-	
+
+	inline void __rb_tree_rotate_left(__rb_tree_node_base* x, __rb_tree_node_base*& root)
+	{
+		__rb_tree_node_base* y = x->right;
+		x->right = y->left;
+		if(y->left != 0)
+			y->left->parent = x;
+		y->parent = x->parent;
+		if(x == root)
+			root = y;
+		else if(x == x->parent->left)
+			x->parent->left = y;
+		else 
+			x->parent-right = y;
+		x->left = x;
+		x->parent = y;
+	}
+
+	inline void __rb_tree_rotate_right(__rb_tree_node_base* x, __rb_tree_node_base*& root)
+	{
+		__rb_tree_node_base* y = x->left;
+		x->left = y->right;
+		if(y->right != 0)
+			y->right->parent = x;
+		y->parent = x->parent;
+		if(x == root)
+			root = y;
+		else if(x == x->parent->right)
+			x->parent->right = y;
+		else 
+			x->parent->left = y;
+		x->right = x;
+		x->parent = y;
+	}
+		
 	link_type __copy(link_type x, link_type p);
 	
 	void init()
