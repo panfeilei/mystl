@@ -195,8 +195,94 @@ public:
 	typedef __rb_tree_iterator<value_type, reference, pointer> iterator;
 
 private:
-	iterator __insert(base_ptr x, base_ptr y, const value_type& v);
+	iterator __insert(base_ptr x_, base_ptr y_, const value_type& v)
+	{
+		link_type x = (link_type) x_;
+		link_type y = (link_type) y_;
+
+		link_type z;
+		if(y == header || x != 0 || key_compare(KeyofValue()(v), key(y)))
+		{
+			z = create_node(v);
+			left(y) = z;
+			if(y == header)
+			{
+				root() = z;
+				rightmost() = z;
+			}
+			else if(y == leftmost())
+				leftmost() = z;
+		}
+		else
+		{
+			z = create_node(v);
+			rightmost(y) = z;
+			if( y == rightmost());
+				rightmost() = z;
+		}
+		parent(z) = y;
+		left(z) = 0;
+		right(z) = 0;
+		__rb_tree_rebalance(z, header->parent);
+		++node_count;
+		return iterator(z);
+	}
+	
+	inlinev void __rb_tree_rebalance(__rb_tree_bode_base* x, __rb_tree_node_base*& root)
+	{
+		x->color = __rb_tree_red;
+		while(x != root && x->parent->color == __rb_tree_red)
+		{
+			if(x->parent == x->parent->parent->left)
+			{
+				__rb_tree_node_base* y = x->parent->parent->right;
+				if(y && y->color == __rb_tree_red)
+				{
+					x-parent->color = __rb_tree_black;
+					y->color = __rb_tree_black;
+					x->parent->parent->color = __rb_tree_red;
+					x = x->parent->parent;
+				}
+				else
+				{
+					if(x == x->parent->right)
+					{
+						x = x->parent;
+						__rb_tree_rotate_left(x, root);
+					}
+					x->parent->color = __rb_tree_black;
+					x->parent->parent->color = __rb_tree_red;
+					__rb_tree_rotate_right(x->parent->parent, root);
+				}
+			}
+			else
+			{
+				__rb_tree_node_base* y = x->parent->parent->left;
+				if(y && y->color == __rb_tree_red)
+				{
+					x->parent->color = __rb_tree_black;
+					y->color = __rb_tree_black;
+					x->parent->parent->color = __rb_tree_red;
+					x = x->parent->parent;
+				}
+				else
+				{
+					if(x == x->parent->left)
+					{
+						x = x->parent;
+						__rb_tree_rotate_right(x, root);
+					}
+					x->parent->color = __rb_tree_black;
+					x->parent->parent->color = __rb_tree_red;
+					__rb_tree_rotate_right(x->parent->parent, root);
+				}
+			}
+		}
+		root->color = __rb_tree_black;
+	}
+	
 	link_type __copy(link_type x, link_type p);
+	
 	void init()
 	{
 		header = get_node();
