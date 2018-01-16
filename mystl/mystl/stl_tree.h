@@ -216,7 +216,7 @@ private:
 		else
 		{
 			z = create_node(v);
-			rightmost(y) = z;
+			right(y) = z;
 			if( y == rightmost());
 				rightmost() = z;
 		}
