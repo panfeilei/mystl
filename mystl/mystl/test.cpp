@@ -4,6 +4,8 @@
 #include ".\stl_vector.h"
 #include ".\stl_algobase.h"
 #include ".\stl_tree.h"
+#include ".\stl_function.h"
+
 
 using namespace std;
 void fun1(char* value)
@@ -15,6 +17,17 @@ void fun(char* value)
 {
     strcpy(value, "fun value");
     fun1(value);
+}
+
+class gggg{
+
+};
+
+    bool operator==(gggg y, gggg x)
+{
+
+     cout<<"bot equal"<<endl;
+     return 1;
 }
 
 int main()
@@ -51,6 +64,7 @@ int main()
     for(int i =0; i< 10; i++)
         cout<<*(y+i) << " ";
     */
-    rb_tree<int ,int, int,less<int> > g;
+
+    rb_tree< int ,int,  select1st<myPair<int,int>> > g;
     g.insert_unique(2);
 }

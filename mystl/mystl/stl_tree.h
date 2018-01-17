@@ -1,9 +1,21 @@
 #ifndef STL_TREE_H
 #define STL_TREE_H
 #include "./stl_pair.h"
+#include ".\stl_function.h"
+
 typedef bool __rb_tree_color_type;
 const __rb_tree_color_type __rb_tree_red = false;
 const __rb_tree_color_type __rb_tree_black = true;
+
+template<class T>
+struct keyofva
+{
+   	T operator()(T value)
+    {
+        return value;
+    }
+};
+
 
 struct __rb_tree_node_base
 {
@@ -89,6 +101,10 @@ struct __rb_tree_base_iterator
     }
 };
 
+inline bool operator==(const __rb_tree_base_iterator& x,
+                       const __rb_tree_base_iterator& y) {
+  return x.node == y.node;
+}
 
 
 template<class Value, class Ref, class Ptr>
@@ -121,7 +137,7 @@ struct __rb_tree_iterator:public __rb_tree_base_iterator
 
 
 
-template<class Key, class Value, class KeyofValue, class Compare, class Alloc = alloc>
+template<class Key, class Value, class KeyofValue, class Compare=less<int>, class Alloc = alloc>
 class rb_tree
 {
 protected:
@@ -147,7 +163,7 @@ protected:
 	link_type create_node(const value_type& x)
 	{
 		link_type tmp = get_node();
-		construct_stl(&tmp, x);
+		construct_stl(&tmp->value_field, x);
 		return tmp;
 	}
 
@@ -174,8 +190,8 @@ protected:
 	link_type& leftmost() const {return (link_type&)header->left;}
 	link_type& rightmost() const {return (link_type&)header->right;}
 
-	static link_type& left(link_type x){return (link_type)(x->left);}
-	static link_type& right(link_type x){return (link_type)(x->right);}
+	static link_type& left(link_type x){return (link_type&)(x->left);}
+	static link_type& right(link_type x){return (link_type&)(x->right);}
 	static link_type& parent(link_type x){return (link_type&)(x->parent);}
 	static reference value(link_type x){return x->value_field;}
 	static const Key& key(link_type x){return KeyofValue()(value(x));};
@@ -238,7 +254,7 @@ private:
 				__rb_tree_node_base* y = x->parent->parent->right;
 				if(y && y->color == __rb_tree_red)
 				{
-					x-parent->color = __rb_tree_black;
+					x->parent->color = __rb_tree_black;
 					y->color = __rb_tree_black;
 					x->parent->parent->color = __rb_tree_red;
 					x = x->parent->parent;
@@ -293,7 +309,7 @@ private:
 		else if(x == x->parent->left)
 			x->parent->left = y;
 		else 
-			x->parent-right = y;
+			x->parent->right = y;
 		x->left = x;
 		x->parent = y;
 	}
@@ -349,7 +365,7 @@ public:
 	size_type size() const {return node_count;}
 	size_type max_size() const{return size_type(-1);}
 
-	pair<iterator, bool> insert_unique(const value_type& v)
+	myPair<iterator, bool> insert_unique(const value_type& v)
 	{
 		link_type y = header;
 		link_type x = root();
@@ -364,14 +380,14 @@ public:
 		if(comp)
 		{
 			if(j == begin())
-				return pair<iterator, bool>(__insert(x, y, v), true);
+				return myPair<iterator, bool>(__insert(x, y, v), true);
 			else
 				--j;
 		}
 		if(key_compare(key(j.node), KeyofValue()(v)))
-			return pair<iterator, bool>(__insert(x, y, v), true);
+			return myPair<iterator, bool>(__insert(x, y, v), true);
 
-		return pair<iterator, bool>(j, false);
+		return myPair<iterator, bool>(j, false);
 	}
 	
 	iterator find(const Key& k)
