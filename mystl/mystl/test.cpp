@@ -51,6 +51,6 @@ int main()
     for(int i =0; i< 10; i++)
         cout<<*(y+i) << " ";
     */
-    rb_tree<int ,int,less<int>,int> g;
-    g.insert_unique(3);
+    rb_tree<int ,int, int,less<int> > g;
+    g.insert_unique(2);
 }

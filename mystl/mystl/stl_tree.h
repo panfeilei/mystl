@@ -389,7 +389,18 @@ public:
 			return (j == end() || key_compare(k, key(j.node))) ? end() : j;
 		}
 	}
-	iterator insert_equal(const value_type& x);
+	
+	iterator insert_equal(const value_type& v)
+	{
+		link_type _y = header;
+		link_type _x = root();
+		while(_x != 0)
+		{
+			_y = _x;
+			_x = key_compare(KeyofValue()(v), key(_x))?left(_x):right(_y);
+		}
+		return __insert(_x, _y, v);
+	}
 };
 
 
