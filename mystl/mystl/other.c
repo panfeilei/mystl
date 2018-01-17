@@ -1,11 +1,4 @@
-﻿//一、左旋代码分析
-/*-----------------------------------------------------------
-|   node           right
-|   / \    ==>     / \
-|   a  right     node  y
-|       / \       / \    
-|       b  y     a   b    //左旋
------------------------------------------------------------*/
+﻿
 static rb_node_t* rb_rotate_left(rb_node_t* node, rb_node_t* root)
 {
     rb_node_t* right = node->right;    //指定指针指向 right<--node->right
@@ -36,15 +29,6 @@ static rb_node_t* rb_rotate_left(rb_node_t* node, rb_node_t* root)
     return root;
 }
 
-
-//二、右旋
-/*-----------------------------------------------------------
-|       node            left
-|       / \             / \
-|    left  y   ==>    a    node
-|   / \                    / \
-|  a   b                  b   y  //右旋与左旋差不多，分析略过
------------------------------------------------------------*/
 static rb_node_t* rb_rotate_right(rb_node_t* node, rb_node_t* root)
 {
     rb_node_t* left = node->left;
@@ -127,9 +111,7 @@ rb_node_t* rb_insert(key_t key, data_t data, rb_node_t* root)
     rb_node_t *parent = NULL, *node;
  
     parent = NULL;
-    if ((node = rb_search_auxiliary(key, root, &parent)))  //调用rb_search_auxiliary找到插入结
-
-点的地方
+    if ((node = rb_search_auxiliary(key, root, &parent)))  //调用rb_search_auxiliary找到插入结点的地方
     {
         return root;
     }
@@ -248,9 +230,7 @@ rb_node_t* rb_erase(key_t key, rb_node_t *root)
     rb_node_t *child, *parent, *old, *left, *node;
     color_t color;
  
-    if (!(node = rb_search_auxiliary(key, root, NULL)))  //调用rb_search_auxiliary查找要删除的
-
-结点
+    if (!(node = rb_search_auxiliary(key, root, NULL)))  //调用rb_search_auxiliary查找要删除的结点
     {
         printf("key %d is not exist!\n");
         return root;
@@ -359,9 +339,7 @@ rb_node_t* rb_erase(key_t key, rb_node_t *root)
  
     if (color == BLACK)
     {
-        root = rb_erase_rebalance(child, parent, root); //调用rb_erase_rebalance来恢复红黑树性
-
-质
+        root = rb_erase_rebalance(child, parent, root); //调用rb_erase_rebalance来恢复红黑树性质
     }
  
     return root;
@@ -388,16 +366,11 @@ static rb_node_t* rb_erase_rebalance(rb_node_t *node, rb_node_t *parent, rb_node
                 other->color = BLACK;  
                 parent->color = RED;   //上俩行，改变颜色，w->黑、p[x]->红。
                 root = rb_rotate_left(parent, root);  //再对p[x]做一次左旋
-                other = parent->right;  //x的新兄弟new w 是旋转之前w的某个孩子。其实就是左旋后
-
-的效果。
+                other = parent->right;  //x的新兄弟new w 是旋转之前w的某个孩子。其实就是左旋后的效果。
             }
             if ((!other->left || other->left->color == BLACK) &&
                 (!other->right || other->right->color == BLACK))  
-                          //情况2：x的兄弟w是黑色，且w的俩个孩子也
-
-都是黑色的
-
+                          //情况2：x的兄弟w是黑色，且w的俩个孩子也都是黑色的
             {                         //由于w和w的俩个孩子都是黑色的，则在x和w上得去掉一黑色，
                 other->color = RED;   //于是，兄弟w变为红色。
                 node = parent;    //p[x]为新结点x
@@ -413,12 +386,9 @@ static rb_node_t* rb_erase_rebalance(rb_node_t *node, rb_node_t *parent, rb_node
                     } 
                     other->color = RED;           //w由黑->红
                     root = rb_rotate_right(other, root);  //再对w进行右旋，从而红黑性质恢复。
-                    other = parent->right;        //变化后的，父结点的右孩子，作为新的兄弟结点
-
-w。
+                    other = parent->right;        //变化后的，父结点的右孩子，作为新的兄弟结点w。
                 }
                             //情况4：x的兄弟w是黑色的
-    
                 other->color = parent->color;  //把兄弟节点染成当前节点父节点的颜色。
                 parent->color = BLACK;  //把当前节点父节点染成黑色
                 if (other->right)      //且w的右孩子是红

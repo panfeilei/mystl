@@ -374,6 +374,21 @@ public:
 		return pair<iterator, bool>(j, false);
 	}
 	
+	iterator find(const Key& k)
+	{
+		link_type y = header;
+		link_type x = root();
+
+		while(x != 0)
+		{
+			if(!key_compare(key(x), k))
+				y = x, x = left(x);
+			else
+				x = right(x);
+			iterator j = iterator(y);
+			return (j == end() || key_compare(k, key(j.node))) ? end() : j;
+		}
+	}
 	iterator insert_equal(const value_type& x);
 };
 

@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string.h>
-
+#include<functional>  
 #include ".\stl_vector.h"
 #include ".\stl_algobase.h"
 #include ".\stl_tree.h"
@@ -51,8 +51,6 @@ int main()
     for(int i =0; i< 10; i++)
         cout<<*(y+i) << " ";
     */
-    rb_tree<int ,int,int,int> g;
-    char* v = new char[20];
-    fun(v);
-    cout<<v;
+    rb_tree<int ,int,less<int>,int> g;
+    g.insert_unique(3);
 }
