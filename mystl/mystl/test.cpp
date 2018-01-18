@@ -4,7 +4,7 @@
 #include ".\stl_vector.h"
 #include ".\stl_algobase.h"
 #include ".\stl_tree.h"
-#include ".\stl_function.h"
+#include ".\stl_map.h"
 
 
 using namespace std;
@@ -65,6 +65,5 @@ int main()
         cout<<*(y+i) << " ";
     */
 
-    rb_tree< int ,int,  identity<int> > g;
-    g.insert_unique(2);
+    map<int, int> g;
 }

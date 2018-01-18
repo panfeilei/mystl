@@ -127,7 +127,7 @@ struct __rb_tree_iterator:public __rb_tree_base_iterator
 
 
 
-template<class Key, class Value, class KeyofValue, class Compare=less<int>, class Alloc = alloc>
+template<class Key, class Value, class KeyofValue, class Compare, class Alloc = alloc>
 class rb_tree
 {
 protected:
@@ -199,6 +199,7 @@ protected:
 
 public:
 	typedef __rb_tree_iterator<value_type, reference, pointer> iterator;
+	typedef __rb_tree_iterator<value_type, const_reference, const_pointer> const_iterator;
 
 private:
 	iterator __insert(base_ptr x_, base_ptr y_, const value_type& v)
@@ -355,7 +356,7 @@ public:
 	size_type size() const {return node_count;}
 	size_type max_size() const{return size_type(-1);}
 
-	myPair<iterator, bool> insert_unique(const value_type& v)
+	pair<iterator, bool> insert_unique(const value_type& v)
 	{
 		link_type y = header;
 		link_type x = root();
@@ -370,14 +371,14 @@ public:
 		if(comp)
 		{
 			if(j == begin())
-				return myPair<iterator, bool>(__insert(x, y, v), true);
+				return pair<iterator, bool>(__insert(x, y, v), true);
 			else
 				--j;
 		}
 		if(key_compare(key(j.node), KeyofValue()(v)))
-			return myPair<iterator, bool>(__insert(x, y, v), true);
+			return pair<iterator, bool>(__insert(x, y, v), true);
 
-		return myPair<iterator, bool>(j, false);
+		return pair<iterator, bool>(j, false);
 	}
 	
 	iterator find(const Key& k)
