@@ -64,7 +64,7 @@ int main()
     for(int i =0; i< 10; i++)
         cout<<*(y+i) << " ";
     */
-myPair<int,int> t;
-    rb_tree< int ,myPair<int,int>,  select1st<myPair<int,int>> > g;
-    g.insert_unique(t);
+
+    rb_tree< int ,int,  identity<int> > g;
+    g.insert_unique(2);
 }

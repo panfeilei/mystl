@@ -32,5 +32,14 @@ struct less: public binary_function<T, T, bool>
 	bool operator()(const T& x, const T& y) const {return x < y;}
 };
 
+template<class T>
+struct identity:public unary_function<T,T>
+{
+   	const T& operator()(const T& value)
+    {
+        return value;
+    }
+};
+
 #endif
 

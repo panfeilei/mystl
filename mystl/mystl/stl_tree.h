@@ -7,16 +7,6 @@ typedef bool __rb_tree_color_type;
 const __rb_tree_color_type __rb_tree_red = false;
 const __rb_tree_color_type __rb_tree_black = true;
 
-template<class T>
-struct keyofva
-{
-   	T operator()(T value)
-    {
-        return value;
-    }
-};
-
-
 struct __rb_tree_node_base
 {
     typedef __rb_tree_color_type color_type;
