@@ -69,8 +69,18 @@ public:
 	//reverse_iterator rbegin() const {return t.rend();}
 	//const_reverse_iterator rbegin() const {return t.rend();}
  	bool empty() const {return t.empty();}
-	size_type size const {return t.size();}
-	size_type max_size() const {return t.max_size()};
+	size_type size() const {return t.size();}
+	size_type max_size() const {return t.max_size();}
+    T& operator[](const key_type& k)
+    {
+        return (*(insert(value_type(k, T())).first)).second;
+    }
+    
+    pair<iterator, bool> insert(const value_type& x)
+    {
+        return t.insert_unique(x);
+    }
+    
 };
 
 #endif
