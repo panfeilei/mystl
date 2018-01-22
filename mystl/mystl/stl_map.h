@@ -73,7 +73,7 @@ public:
 	size_type max_size() const {return t.max_size();}
     T& operator[](const key_type& k)
     {
-        return (*(insert(value_type(k, T())).first)).second;
+        return (*((insert(value_type(k, T()))).first)).second;
     }
     
     pair<iterator, bool> insert(const value_type& x)
