@@ -80,7 +80,55 @@ public:
     {
         return t.insert_unique(x);
     }
-    
+
+	iterator insert(iterator position, const value_type& x)
+	{
+		return t.insert_unique(position,x)
+			
+	}
+
+	template<class InputIterator>
+	void insert(InputIterator position, InputIterator last)
+	{
+		return t.insert_unique(position,x);
+	}
+
+	void erase(iterator position){t.erase(position);}
+	size_type erase(const key_type& x){return t.erase(x);}
+	void erase(iterator first, iterator last){t.erase(first, last);}
+	void clear(){t.clear();}
+
+	iterator find(const key_type& x){return t.find(x);}
+	const_iterator find(const key_type& x) const {return t.find(x);}
+	size_type count(const key_type& x) const {return t.count(x);}
+	iterator lower_bound(const key_type& x) 
+	{
+		return t.lower_bound(x);
+	}
+	const_iterator lower_bound(const key_type& x) const
+	{
+		return t.lower_bound(x);
+	}
+	iterator upper_bound(const key_type& x) 
+	{
+		return t.upper_bound(x);
+	}
+	const_iterator upper_bound(const key_type& x) const
+	{
+		return t.upper_bound(x);
+	}
+
+	pair<iterator, iterator> equal_range(const key_type& x)
+	{
+		return t.equal_range(x);
+	}
+
+	pair<const_iterator, const_iterator> equal_range(const key_type& x) const
+	{
+		return t.equal_range(x);
+	}
+	friend bool operator==(const map&, const map&);
+	friend bool operator<(const map&, const map&);
 };
 
 #endif
