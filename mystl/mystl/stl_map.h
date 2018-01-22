@@ -130,6 +130,20 @@ public:
 	friend bool operator==(const map&, const map&);
 	friend bool operator<(const map&, const map&);
 };
+template<class Key, class T, class Compare, class Alloc>
+inline bool operator==(const map<Key, T, Compare, Alloc>& x,
+							const map<Key, T, Comapre, Alloc>& y)
+{
+	return x.t == y.t;
+}
+
+template<class Key, class T, class Compare, class Alloc>
+inline bool operator<(const map<Key, T, Compare, Alloc>& x,
+							const map<Key, T, Comapre, Alloc>& y)
+{
+	return x.t < y.t;
+}
+
 
 #endif
 
