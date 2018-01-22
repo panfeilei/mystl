@@ -65,5 +65,7 @@ int main()
         cout<<*(y+i) << " ";
     */
 
-    map<int, int> g;
+    map<string, int> g;
+    g["rrr"] = 4;
+    cout<<"s "<<g["rrr"];
 }

@@ -110,7 +110,7 @@ struct __rb_tree_iterator:public __rb_tree_base_iterator
 
 	__rb_tree_iterator(){}
 	__rb_tree_iterator(link_type x){node = x;}
-	reference operator*() const {return link_type(node)->value_filed;}
+	reference operator*() const {return link_type(node)->value_field;}
 	self& operator++(){increment();return *this;}
 	self operator++(int){
 		self tmp = *this;

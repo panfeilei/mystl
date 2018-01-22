@@ -83,14 +83,14 @@ public:
 
 	iterator insert(iterator position, const value_type& x)
 	{
-		return t.insert_unique(position,x)
+		return t.insert_unique(position,x);
 			
 	}
 
 	template<class InputIterator>
-	void insert(InputIterator position, InputIterator last)
+	void insert(InputIterator first, InputIterator last)
 	{
-		return t.insert_unique(position,x);
+		return t.insert_unique(first,last);
 	}
 
 	void erase(iterator position){t.erase(position);}
@@ -132,14 +132,14 @@ public:
 };
 template<class Key, class T, class Compare, class Alloc>
 inline bool operator==(const map<Key, T, Compare, Alloc>& x,
-							const map<Key, T, Comapre, Alloc>& y)
+							const map<Key, T, Compare, Alloc>& y)
 {
 	return x.t == y.t;
 }
 
 template<class Key, class T, class Compare, class Alloc>
 inline bool operator<(const map<Key, T, Compare, Alloc>& x,
-							const map<Key, T, Comapre, Alloc>& y)
+							const map<Key, T, Compare, Alloc>& y)
 {
 	return x.t < y.t;
 }
