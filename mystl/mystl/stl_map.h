@@ -24,8 +24,7 @@ public:
 			}
 	};
 private:
-	typedef  rb_tree<key_type, value_type,
-	select1st<value_type>, key_compare, Alloc> rep_type;
+	typedef  rb_tree<key_type, value_type,select1st<value_type>, key_compare, Alloc> rep_type;
 	rep_type t;
 public:
 	typedef typename rep_type::pointer pointer;

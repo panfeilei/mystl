@@ -146,6 +146,8 @@ public:
 	typedef rb_tree_node* link_type;
 	typedef size_t size_type;
 	typedef ptrdiff_t difference_type;
+	typedef __rb_tree_iterator<value_type, reference, pointer> iterator;
+	typedef __rb_tree_iterator<value_type, const_reference, const_pointer> const_iterator;
 protected:
 	link_type get_node(){return rb_tree_node_allocator::allocate();}
 	void put_node(link_type p){rb_tree_node_allocator::deallocate(p);}
@@ -196,10 +198,6 @@ protected:
 
 	static link_type minimum(link_type x){return (link_type)__rb_tree_node_base::minimum(x);}
 	static link_type maximum(link_type x){return (link_type)__rb_tree_node_base::maximum(x);}
-
-public:
-	typedef __rb_tree_iterator<value_type, reference, pointer> iterator;
-	typedef __rb_tree_iterator<value_type, const_reference, const_pointer> const_iterator;
 
 private:
 	iterator __insert(base_ptr x_, base_ptr y_, const value_type& v)
@@ -356,6 +354,7 @@ public:
 	size_type size() const {return node_count;}
 	size_type max_size() const{return size_type(-1);}
 
+	//插入元素，如果键值已经存在则不插入，直接返回该键
 	pair<iterator, bool> insert_unique(const value_type& v)
 	{
 		link_type y = header;
