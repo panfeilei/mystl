@@ -158,7 +158,7 @@ struct rbtree
             oldcolor = y.color;
             x = y.right;
             if(y.p == z)
-                x.p =y;
+                x.p =y; 
             else
             {
                 rb_transplant(y, y.right);
