@@ -145,7 +145,7 @@ struct rbtree
         {
             x = z.right;
             rb_transplant(z, z.right);
-        }	
+        }	 
         else if(z.right == NULL)
         {
             x = z.left;
