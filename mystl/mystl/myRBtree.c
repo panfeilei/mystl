@@ -117,4 +117,62 @@ struct rbtree
         x->right = y;
         y->p = x;
     }
+    
+    void rb_transplant(rbtree_node* old, rbtree_node* new)
+    {
+        if(old.p == NULL)
+            root = new;
+        else if(old == old.p.left)
+            old.p.left = new;
+        else old.p.right = new;
+        new.p = old.p;
+    }
+    rbtree_node* minimum(rbtree_node* x)
+    {
+        rbtree_node* t = x;
+        while(t.left != NULL)
+            t = t.left;
+        return t;
+    }
+    
+    void delete(rbtree_node* z)
+    {
+        rbtree_node* x = NULL;
+
+        rbtree_node* y = z;
+        int oldcolor = y.color;
+        if(z.left == NULL)
+        {
+            x = z.right;
+            rb_transplant(z, z.right);
+        }	
+        else if(z.right == NULL)
+        {
+            x = z.left;
+            rb_transplant(z, z.left);
+        }
+        else
+        {
+            y = minimum(z.right);
+
+            oldcolor = y.color;
+            x = y.right;
+            if(y.p == z)
+                x.p =y;
+            else
+            {
+                rb_transplant(y, y.right);
+                y.right = x.right;
+                y.right.p = y;
+            }
+            rb_transplant(z, y);
+            y.left = z.left;
+            y.left.p = y;
+            y.color = z.color;
+        }
+        if(oldcolor == BLACK)
+            rbdelete_fixup(x)
+    }
+
+
 };
