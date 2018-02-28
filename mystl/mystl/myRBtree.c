@@ -134,7 +134,8 @@ struct rbtree
             t = t.left;
         return t;
     }
-    
+
+	要删除的节点为z，用y替换原来z的位置，x替换y的位置
     void delete(rbtree_node* z)
     {
         rbtree_node* x = NULL;
@@ -157,12 +158,10 @@ struct rbtree
 
             oldcolor = y.color;
             x = y.right;
-            if(y.p == z)
-                x.p =y; 
-            else
+            if(y.p != z)
             {
                 rb_transplant(y, y.right);
-                y.right = x.right;
+                y.right = z.right;
                 y.right.p = y;
             }
             rb_transplant(z, y);
@@ -173,6 +172,11 @@ struct rbtree
         if(oldcolor == BLACK)
             rbdelete_fixup(x)
     }
+
+	void rbdelete_fixup(rbtree_node* x)
+    {
+		
+	}
 
 
 };
