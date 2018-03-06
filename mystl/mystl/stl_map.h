@@ -126,8 +126,8 @@ public:
 	{
 		return t.equal_range(x);
 	}
-	friend bool operator==(const map&, const map&);
-	friend bool operator<(const map&, const map&);
+	friend bool operator==<>(const map&, const map&);
+	friend bool operator< <>(const map&, const map&);
 };
 template<class Key, class T, class Compare, class Alloc>
 inline bool operator==(const map<Key, T, Compare, Alloc>& x,
