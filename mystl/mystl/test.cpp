@@ -5,29 +5,78 @@
 #include ".\stl_algobase.h"
 #include ".\stl_tree.h"
 #include ".\stl_map.h"
-
-
 using namespace std;
-void fun1(char* value)
-{
-    strcpy(value, "fun1 value");
-}
 
-void fun(char* value)
-{
-    strcpy(value, "fun value");
-    fun1(value);
-}
 
-class gggg{
-
+struct node{
+	node* left;
+	node* right;
+	int key;
+public:
+	node(int k):key(k){
+		left = NULL;
+		right = NULL;
+	}
+};
+class tree{
+	node *root;
+public:
+	tree(){root = NULL;}
+    node* troot(){return root;}
+	void insert(int key)
+	{
+		node* tmp = new node(key);
+		node* i = root;
+        node* p;
+		if(i == NULL)
+		{
+            root = tmp;
+            return;
+        }
+		else
+		{
+			while(i != NULL)
+			{
+                p = i;
+				if(key > i->key)
+					i = i->right;
+				else 
+					i = i->left;
+			}
+            
+            if(key < p->key)
+                p->left = tmp;
+            else 
+                p->right = tmp;
+		}
+	}
 };
 
-    bool operator==(gggg y, gggg x)
+void beprin(node* t)
 {
+    if(t == NULL)
+        return;
+    cout<<t->key;
+    beprin(t->left);
+    beprin(t->right);
+}
 
-     cout<<"bot equal"<<endl;
-     return 1;
+void midprin(node* t)
+{
+    if(t == NULL)
+        return;
+    midprin(t->left);
+    cout<<t->key;
+    midprin(t->right);
+}
+
+void afprin(node* t)
+{
+    if(t == NULL)
+        return;
+    afprin(t->left);
+    afprin(t->right);
+    cout<<t->key;
 }
 
 int main()

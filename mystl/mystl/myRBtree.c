@@ -173,10 +173,10 @@ struct rbtree
             rbdelete_fixup(x)
     }
 
-	情况1：转为2、3、4
-	情况2：使得x兄弟w少一层黑，两边平衡
-	情况3：转为情况4
-	情况4：旋转给x上添加一个黑节点
+	//情况1：转为2、3、4
+	//情况2：使得x兄弟w少一层黑，两边平衡
+	//情况3：转为情况4
+	//情况4：旋转给x上添加一个黑节点
 	void rbdelete_fixup(rbtree_node* x)
     {
 		if(x!=root && x.color == BLACK)
