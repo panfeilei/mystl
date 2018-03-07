@@ -140,10 +140,68 @@ node* buildtree1(string bes, string mids)
     root->right = buildtree1(rightbe, rightmid);
     return root;
 }
+
+void swap1(int* x, int* y)
+{
+    int tmp = *x;
+    *x = *y;
+    *y = tmp;
+}
+
+template<class T>
+void quicksort(T& num, int begin, int end)
+{
+    if(begin >= end)
+        return;
+    int len = sizeof(num)/sizeof(num[0]);
+    int mid = begin;
+    for(int i = begin;i<end;i++)
+    {
+        if(num[i] < num[end])
+        {
+            swap(num[i], num[mid++]);
+        }
+    }
+    swap(num[end], num[mid]);
+    quicksort(num, begin, mid-1);
+    quicksort(num, mid+1, end);
+}
+
+template<class T>
+void mergesort(T& num, int begin, int end)
+{
+    if(begin >= end)
+        return;
+    
+    int mid = (begin + end)/2;
+    mergesort(num, begin, mid);
+    mergesort(num, mid+1, end);
+    int i= begin;
+    int j = mid+1;
+    while(i < j && j < end)
+    {
+        if(num[i] > num[j])
+        {
+            swap(num[i], num[j]);
+            i++;
+        }
+    }    
+}
+
+
+void test(int& num, int& num2)
+{
+    num = 99;
+}
+
 int main()
 {
-    node* r = buildtree1("6259", "2569");
-    afprin(r);
+    //node* r = buildtree1("12473568", "47215386");
+    //afprin(r);
+    int t[12]={9,4,7,6,2,1,9,2, 8, 25,46, 82};
+    quicksort(t, 0, 10);
+    for(int i=0; i< 12; i++)
+        cout<<t[i]<<" ";
     // tree t;
     // t.insert(6);
     // t.insert(9);
