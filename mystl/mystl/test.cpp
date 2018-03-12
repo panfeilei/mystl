@@ -188,24 +188,85 @@ void mergesort(T& num, int begin, int end)
     }    
 }
 
+struct list_node{
+    list_node* next;
+    int key;
+    list_node(int k):key(k),next(NULL)
+    {}
+};
+struct List{
+    list_node* root;
+    list_node* tail;
+    List():root(NULL), tail(NULL)
+    {}
+    void insert(int key)
+    {
+        list_node* tmp = new list_node(key);
+        if(root==NULL)
+        {
+            root = tmp;
+            tail = tmp;
+        }
+        else
+        {
+            tail->next = tmp;
+            tail=tmp;
+        }
+    }
+    
+    void lprint()
+    {
+        if(root!=NULL)
+        {
+            list_node* t = root;
+            while(t!= NULL)
+            {
+                cout<<t->key<<" ";
+                t=t->next;
+            }
+        }
+    }
+  
+};
 
-void test(int& num, int& num2)
+void reverlist(List& l)
 {
-    num = 99;
+    list_node* prev = NULL;
+    list_node* curr = l.root;
+    list_node* next = NULL;
+    while(curr!=NULL)
+    {
+        next = curr->next;
+        curr->next = prev;
+        prev = curr;
+        if(next != NULL)
+            curr=next;  
+        else
+            break;
+    }
+    l.root = curr;
+    
 }
-
 int main()
 {
+    // int t[12]={9,4,7,6,2,1,9,2, 8, 25,46, 82};
+    // quicksort(t, 0, 10);
+    // for(int i=0; i< 12; i++)
+        // cout<<t[i]<<" ";
+    
     //node* r = buildtree1("12473568", "47215386");
     //afprin(r);
-    int t[12]={9,4,7,6,2,1,9,2, 8, 25,46, 82};
-    quicksort(t, 0, 10);
-    for(int i=0; i< 12; i++)
-        cout<<t[i]<<" ";
     // tree t;
     // t.insert(6);
     // t.insert(9);
     // t.insert(2);
     // t.insert(5);
     // midprin(t.troot());
+    List l;
+    l.insert(1);
+    l.insert(3);
+    l.insert(8);
+    l.insert(4);
+    reverlist(l);
+    l.lprint();
 }
