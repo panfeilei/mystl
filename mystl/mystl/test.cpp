@@ -337,14 +337,36 @@ void beprin_Stack(node* t)
     s.push(tmp);
     while(!s.empty())
     {
+        //cout<<"size:"<<s.size()<<endl;
         tmp = s.top();
         s.pop();
         cout<<tmp->key<<" ";
-        if(tmp->right) s.push(t->right);
-        if(tmp->left) s.push(t->left);
+        if(tmp->right) s.push(tmp->right);
+        if(tmp->left) s.push(tmp->left);
 
     }
 }
+
+void afprin_Stack(node* t)
+{
+    stack<node*> s;
+    node* tmp = t;
+    s.push(tmp);
+    while(!s.empty() || tmp != NULL)
+    {   
+        
+        if(tmp->right) s.push(tmp->right);
+        if(tmp->left) s.push(tmp->left);
+        if(tmp->left == NULL && tmp->right == NULL)
+        {
+            tmp = s.top();
+            s.pop();
+            cout<<tmp->key<<" ";
+        }
+
+    }
+}
+
 int main()
 {
     // int t[12]={9,4,7,6,2,1,9,2, 8, 25,46, 82};
@@ -364,7 +386,9 @@ int main()
     t.insert(1);
     t.insert(15);
     t.insert(3);
-    beprin_Stack(t.troot());
+    afprin(t.troot());
+    //afprin_Stack(t.troot());
+    //beprin_Stack(t.troot());
     // tree t2;
     // t2.insert(2);
     // t2.insert(5);
@@ -380,6 +404,5 @@ int main()
     // reverlist(l);
     // l.lprint();
     
-    Stack s;
 
 }
