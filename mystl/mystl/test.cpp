@@ -2,6 +2,7 @@
 #include <string.h>
 #include<functional> 
 #include <stdlib.h> 
+#include <stack>
 #include ".\stl_vector.h"
 #include ".\stl_algobase.h"
 #include ".\stl_tree.h"
@@ -113,6 +114,43 @@ node* buildtree(char* bes, char* mids)
     root->left = buildtree(leftbes, leftmids);
     root->right = buildtree(rightbes, rightmids);
     return root;
+}
+
+int judge(node*t, node* t2)
+{
+    if(t == NULL && t2 == NULL)
+        return 1;
+    else if(t == NULL || t2 == NULL)
+        return 0;
+    if(t->key == t2->key)
+    {
+        int le,ri;
+        le = judge(t->right, t2->right);
+        ri = judge(t->left, t2->left);
+        return le&ri;
+    }
+    else
+        return 0;
+    
+}
+
+int midprin1(node* t,node* t2)
+{
+    int re=0,ri=0,le=0;
+    if(t == NULL)
+        return 0;
+    if(t->key == t2->key)
+    {
+        re = judge(t, t2);
+    }
+    le = midprin1(t->left, t2);
+    ri = midprin1(t->right, t2);
+    return re|ri|le;
+}
+
+int judgechild(tree t, tree t2)
+{
+    midprin1(t.troot(), t2.troot());
 }
 
 node* buildtree1(string bes, string mids)
@@ -245,7 +283,67 @@ void reverlist(List& l)
             break;
     }
     l.root = curr;
-    
+}
+
+struct Stack{
+    list_node* top;
+    Stack():top(NULL){}
+    void push(int key)
+    {
+        list_node* tmp = new list_node(key);
+        tmp->next = top;
+        top = tmp;
+    }
+  
+    int pop()
+    {
+        if(top == NULL)
+            return -1;
+        
+        int re = top->key;
+        list_node* t = top;
+        top = top->next;
+        t->next = NULL;
+        return re;
+    }
+};
+
+
+void midprin_Stack(node* t)
+{
+    stack<node*> s;
+    node* tmp = t;
+    while(!s.empty() || tmp!=NULL)
+    {
+        if(tmp == NULL)
+        {
+            node* cur = s.top();
+            cout<<cur->key<<" ";
+            s.pop();
+            tmp = cur->right;
+        }
+        else
+        {
+            s.push(tmp);
+            tmp = tmp->left;
+        }
+    }
+}
+
+void beprin_Stack(node* t)
+{
+    stack<node*> s;
+    node* tmp = t;
+    s.push(tmp);
+    while(!s.empty())
+    {
+        tmp = s.top();
+        s.pop();
+        cout<<tmp->key<<" ";
+        if(tmp->right) s.push(t->right);
+        if(tmp->left) s.push(t->left);
+
+    }
 }
 int main()
 {
@@ -256,17 +354,32 @@ int main()
     
     //node* r = buildtree1("12473568", "47215386");
     //afprin(r);
-    // tree t;
-    // t.insert(6);
-    // t.insert(9);
-    // t.insert(2);
-    // t.insert(5);
-    // midprin(t.troot());
-    List l;
-    l.insert(1);
-    l.insert(3);
-    l.insert(8);
-    l.insert(4);
-    reverlist(l);
-    l.lprint();
+    
+    tree t;
+    t.insert(6);
+    t.insert(9);
+    t.insert(2);
+    t.insert(5);
+    t.insert(7);
+    t.insert(1);
+    t.insert(15);
+    t.insert(3);
+    beprin_Stack(t.troot());
+    // tree t2;
+    // t2.insert(2);
+    // t2.insert(5);
+    // t2.insert(1);
+    // t2.insert(3);
+    // cout<<midprin1(t.troot(),t2.troot())<<endl;
+    // List l;
+    
+    // l.insert(1);
+    // l.insert(3);
+    // l.insert(8);
+    // l.insert(4);
+    // reverlist(l);
+    // l.lprint();
+    
+    Stack s;
+
 }

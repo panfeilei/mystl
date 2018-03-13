@@ -179,7 +179,7 @@ struct rbtree
 	//情况4：旋转给x上添加一个黑节点
 	void rbdelete_fixup(rbtree_node* x)
     {
-		while(x!=root && x.color == BLACK)
+		while(x != root && x.color == BLACK)
 		{
 			if(x == x.p.left)
             {
@@ -196,11 +196,21 @@ struct rbtree
                     w.color = RED;
                     x = x.p;
                 }
-                else if(w.right = BLACK)
+                else if(w.left.color == RED && w.right.color = BLACK)
                 {
-                    
+                    w.color = RED;
+                    w.left.color = BLACK;
+                    right_rotate(w);
+                    w = x.p.right;
                 }
-                
+                else if(w.right.color == RED)
+                {
+                    w.color = x.p.color;
+                    x.p.color = BLACK;
+                    w.right.color = BLACK;
+                    left_rotate(x.p);
+                    x = root;
+                }
             }
             else
             {
