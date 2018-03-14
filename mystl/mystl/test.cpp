@@ -337,7 +337,6 @@ void beprin_Stack(node* t)
     s.push(tmp);
     while(!s.empty())
     {
-        //cout<<"size:"<<s.size()<<endl;
         tmp = s.top();
         s.pop();
         cout<<tmp->key<<" ";
@@ -351,19 +350,45 @@ void afprin_Stack(node* t)
 {
     stack<node*> s;
     node* tmp = t;
+    node* c = NULL;
     s.push(tmp);
-    while(!s.empty() || tmp != NULL)
+    while(!s.empty())
     {   
-        
-        if(tmp->right) s.push(tmp->right);
-        if(tmp->left) s.push(tmp->left);
-        if(tmp->left == NULL && tmp->right == NULL)
+        tmp = s.top();
+        if(tmp->left && tmp->left!=c && tmp->right!=c) 
+            s.push(tmp->left);
+        else if(tmp->right&& tmp->right!=c) 
+            s.push(tmp->right);
+        else
         {
-            tmp = s.top();
+            c = tmp;
             s.pop();
             cout<<tmp->key<<" ";
         }
+    }
+}
 
+void afprin_Stack1(node* t)
+{
+    stack<node*> s;
+    node* tmp = t;
+    node* c = NULL;
+    s.push(tmp);
+    while(!s.empty())
+    {   
+        tmp = s.top();
+        
+        if(tmp->right&& tmp->right!=c && tmp->left!=c) 
+            s.push(tmp->right);
+        if(tmp->left && tmp->left!=c && tmp->right!=c) 
+            s.push(tmp->left);
+        
+        if((tmp->left == NULL && tmp->right!=c) || tmp->right==c || tmp->left==c) 
+        {
+            c = tmp;
+            s.pop();
+            cout<<tmp->key<<" ";
+        }
     }
 }
 
@@ -387,7 +412,7 @@ int main()
     t.insert(15);
     t.insert(3);
     afprin(t.troot());
-    //afprin_Stack(t.troot());
+    //afprin_Stack1(t.troot());
     //beprin_Stack(t.troot());
     // tree t2;
     // t2.insert(2);
